@@ -1,18 +1,21 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" data-theme="dark">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ECHO GLOVE | AI Sign Language Translator</title>
-    
-    <!-- ฟอนต์ Kanit สำหรับภาษาไทยที่ดูทันสมัย -->
+
+    <!-- ฟอนต์ Kanit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;600&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;600&family=Rajdhani:wght@500;700&display=swap"
+        rel="stylesheet">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Icon Library -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -28,13 +31,12 @@
                         'echo-dark': '#0a0a0a',
                         'echo-gray': '#1f1f1f',
                         'echo-silver': '#e5e5e5',
-                        'echo-accent': '#3b82f6', // สีฟ้าหม่นเล็กน้อยสำหรับจุดเน้น
+                        'echo-accent': '#3b82f6', // สีฟ้า Neon
                         'echo-success': '#10b981',
                         'echo-warning': '#f59e0b',
                     },
                     backgroundImage: {
                         'hero-pattern': "url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop')",
-                        'tech-grid': "linear-gradient(to right, #1f1f1f 1px, transparent 1px), linear-gradient(to bottom, #1f1f1f 1px, transparent 1px)",
                     }
                 }
             }
@@ -42,39 +44,94 @@
     </script>
 
     <style>
-        /* --- เพิ่ม Smooth Scroll กลับมาแล้วครับ --- */
         html {
             scroll-behavior: smooth;
         }
 
-        /* กำหนดตัวแปรสีใน CSS ให้มองเห็นได้ทั่วถึง */
         :root {
-            --echo-accent: #3b82f6; /* สีฟ้า */
-            --echo-dark: #0a0a0a;   /* สีพื้นหลังเข้ม */
-            --echo-gray: #1f1f1f;   /* สีเทาพื้นหลังวงกลม */
+            --bg-main: #0a0a0a;
+            --bg-sec: #1f1f1f;
+            --bg-panel: rgba(30, 30, 30, 0.4);
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.05);
+            --echo-accent: #3b82f6;
+            --flow-text: white;
+            --flow-box-fill: rgba(30, 30, 30, 0.9);
+            --flow-line: #6b7280;
+        }
+
+        [data-theme="light"] {
+            --bg-main: #f8fafc;
+            --bg-sec: #ffffff;
+            --bg-panel: rgba(255, 255, 255, 0.7);
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --flow-text: #1e293b;
+            --flow-box-fill: rgba(255, 255, 255, 0.9);
+            --flow-line: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        /* Helper Classes */
+        .bg-echo-dark {
+            background-color: var(--bg-main) !important;
+        }
+
+        .bg-echo-gray {
+            background-color: var(--bg-sec) !important;
+        }
+
+        .bg-black {
+            background-color: var(--bg-main) !important;
+        }
+
+        .text-white {
+            color: var(--text-primary) !important;
+        }
+
+        .text-gray-300,
+        .text-gray-400,
+        .text-gray-500 {
+            color: var(--text-secondary) !important;
+        }
+
+        .border-white\/5,
+        .border-white\/10 {
+            border-color: var(--border-color) !important;
         }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
+
         ::-webkit-scrollbar-track {
-            background: #0a0a0a;
+            background: var(--bg-main);
         }
+
         ::-webkit-scrollbar-thumb {
             background: #444;
             border-radius: 4px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: #666;
         }
-        
+
         .glass-panel {
-            background: rgba(30, 30, 30, 0.4);
+            background: var(--bg-panel);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            transition: background 0.5s, border-color 0.5s;
         }
-        
+
         .fade-in-up {
             animation: fadeInUp 1s ease-out forwards;
             opacity: 0;
@@ -88,18 +145,154 @@
             }
         }
 
-        .delay-100 { animation-delay: 0.2s; }
-        .delay-200 { animation-delay: 0.4s; }
-        .delay-300 { animation-delay: 0.6s; }
-        .delay-400 { animation-delay: 0.8s; }
-        
-        /* Progress Bar Animation */
-        .progress-bar {
-            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 0%; 
+        .delay-100 {
+            animation-delay: 0.2s;
         }
 
-        /* --- Radial Progress Animation Engine --- */
+        .delay-200 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-300 {
+            animation-delay: 0.6s;
+        }
+
+        .delay-400 {
+            animation-delay: 0.8s;
+        }
+
+        /* Flowchart */
+        .flow-text {
+            fill: var(--flow-text) !important;
+            transition: fill 0.5s;
+        }
+
+        .flow-box {
+            fill: var(--flow-box-fill) !important;
+            transition: fill 0.5s;
+        }
+
+        .flow-decision,
+        .flow-process-alert {
+            fill: var(--flow-box-fill) !important;
+            transition: fill 0.5s;
+        }
+
+        .flow-label {
+            fill: var(--text-secondary) !important;
+        }
+
+        .flow-label-no {
+            fill: var(--flow-text) !important;
+        }
+
+        .flow-line,
+        .flow-line-dotted {
+            stroke: var(--flow-line) !important;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle-btn {
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(15deg);
+        }
+
+        [data-theme="light"] .theme-toggle-btn {
+            background: rgba(0, 0, 0, 0.05);
+            color: #1e293b;
+        }
+
+        /* --- GLASS BUTTONS --- */
+        .hero-glass-btn {
+            position: relative;
+            padding: 12px 32px;
+            font-family: 'Kanit', sans-serif;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            color: #fff !important;
+            /* Force white text on buttons */
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hero-glass-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            border-color: rgba(59, 130, 246, 0.5);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%);
+        }
+
+        /* Light Theme Button Styles */
+        [data-theme="light"] .hero-glass-btn {
+            color: #1e293b !important;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%);
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] .hero-glass-btn:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        [data-theme="light"] .hero-glass-btn .shimmer {
+            background: linear-gradient(to right, transparent, rgba(59, 130, 246, 0.2), transparent);
+        }
+
+        .hero-glass-btn .shimmer {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: skewX(-20deg);
+            transition: 0.5s;
+        }
+
+        .hero-glass-btn:hover .shimmer {
+            animation: shimmer-anim 1s;
+        }
+
+        @keyframes shimmer-anim {
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 200%;
+            }
+        }
+
+        /* --- GLOW TEXT EFFECT --- */
+        /* Removed for monochromatic look */
+
+        /* --- Progress & Radial Chart --- */
+        .progress-bar {
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 0%;
+        }
+
         @property --progress {
             syntax: '<angle>';
             inherits: false;
@@ -107,9 +300,11 @@
         }
 
         @keyframes progress-rotate {
-            to { --progress: var(--target-progress); }
+            to {
+                --progress: var(--target-progress);
+            }
         }
-        
+
         .radial-progress {
             --progress: 0deg;
             width: 180px;
@@ -119,14 +314,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            
-            background: 
-                radial-gradient(closest-side, var(--echo-dark) 82%, transparent 83% 100%),
+            background: radial-gradient(closest-side, var(--bg-main) 82%, transparent 83% 100%),
                 conic-gradient(var(--echo-accent) var(--progress), var(--echo-gray) 0);
-            
             box-shadow: 0 0 30px rgba(59, 130, 246, 0.15);
+            transition: background 0.5s;
         }
-        
+
         .radial-progress::before {
             content: '';
             position: absolute;
@@ -141,15 +334,15 @@
         .radial-progress.animate-radial {
             animation: progress-rotate 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
-        
+
         .card-text {
             overflow-wrap: break-word;
             word-wrap: break-word;
             hyphens: auto;
         }
-
     </style>
 </head>
+
 <body class="bg-echo-dark text-gray-300 font-sans antialiased overflow-x-hidden">
 
     <!-- Navbar -->
@@ -157,74 +350,112 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <div class="flex items-center">
-                    <span class="font-tech text-3xl text-white font-bold tracking-wider">ECHO<span class="text-gray-500">GLOVE</span></span>
+                    <span class="font-tech text-3xl text-white font-bold tracking-wider">ECHO<span
+                            class="text-gray-500">GLOVE</span></span>
                 </div>
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-8">
-                        <a href="#about" class="hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase">บทนำ</a>
-                        <a href="#technology" class="hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase">เทคโนโลยี</a>
-                        <a href="#hardware" class="hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase">อุปกรณ์</a>
-                        <a href="#results" class="hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase">ผลการทดสอบ</a>
-                        <a href="#howitworks" class="hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase">หลักการทำงาน</a>
-                        <a href="#demo" class="hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase">ชมการสาธิต</a>
+                <div class="hidden md:flex items-center gap-8">
+                    <div class="flex items-baseline space-x-8">
+                        <a href="#about"
+                            class="hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase">บทนำ</a>
+                        <a href="#evolution"
+                            class="hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase">พัฒนาการ</a>
+                        <a href="#technology"
+                            class="hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase">เทคโนโลยี</a>
+                        <a href="#hardware"
+                            class="hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase">อุปกรณ์</a>
+                        <a href="#results"
+                            class="hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase">ผลการทดสอบ</a>
+                        <a href="#howitworks"
+                            class="hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase">หลักการทำงาน</a>
+                        <a href="#demo"
+                            class="hover:text-white transition-colors duration-300 text-sm tracking-widest uppercase">ชมการสาธิต</a>
                     </div>
+                    <!-- Theme Toggle Button -->
+                    <button class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle Theme">
+                        <i data-lucide="sun" class="w-5 h-5 block dark-icon"></i>
+                        <i data-lucide="moon" class="w-5 h-5 hidden light-icon"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="relative h-screen flex items-center justify-center overflow-hidden">
-        <!-- Background Overlay -->
-        <div class="absolute inset-0 bg-echo-dark/90 z-10"></div>
-        <div class="absolute inset-0 bg-hero-pattern bg-cover bg-center opacity-40 z-0"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-echo-dark via-transparent to-transparent z-10"></div>
+    <section id="hero-section" class="relative h-screen flex items-center justify-center overflow-hidden">
 
+        <!-- 1. Background Image (B/W Filter Applied) -->
+        <div
+            class="absolute inset-0 bg-hero-pattern bg-cover bg-center opacity-30 z-0 transition-opacity duration-500 grayscale">
+        </div>
+
+        <!-- 2. Dark Overlay -->
+        <div class="absolute inset-0 bg-echo-dark/80 z-0 transition-colors duration-500"
+            style="background-color: var(--bg-main); opacity: 0.8;"></div>
+
+        <!-- 3. Content -->
         <div class="relative z-20 text-center px-4 max-w-5xl mx-auto">
-            
+
             <!-- Logo Container -->
-            <div class="mb-8 fade-in-up flex justify-center items-center gap-12">
+            <div class="mb-8 fade-in-up flex justify-center items-center gap-8 pointer-events-auto">
                 <!-- ตราโรงเรียน -->
                 <div class="relative group cursor-pointer" onclick="openSchoolModal()">
-                    <img src="FB_IMG_1758108206833-Photoroom.png" alt="School Logo" 
-                         class="h-28 w-auto drop-shadow-2xl filter transition-transform duration-500 hover:scale-110 hover:brightness-110">
-                    <div class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-xs text-gray-400 whitespace-nowrap">
+                    <!-- ปรับขนาดรูปภาพให้เล็กลงจาก h-52 เป็น h-40 -->
+                    <img src="FB_IMG_1758108206833-Photoroom.png" alt="School Logo"
+                        class="h-40 w-auto drop-shadow-2xl filter transition-transform duration-500 hover:scale-110 hover:brightness-110 hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                    <div
+                        class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-xs text-gray-400 whitespace-nowrap">
                         คลิกเพื่อดูข้อมูลโรงเรียน
                     </div>
                 </div>
-                
+
                 <!-- ตรา GSRT -->
                 <a href="https://www.facebook.com/aigsrttupp/" target="_blank" class="relative group cursor-pointer">
-                    <img src="1750754404294-Photoroom.png" alt="GSRT Logo" 
-                         class="h-28 w-auto drop-shadow-2xl filter transition-transform duration-500 rounded-full border-2 border-white/10 hover:scale-110 hover:brightness-110">
-                    <div class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-xs text-gray-400 whitespace-nowrap">
+                    <!-- ปรับขนาดรูปภาพให้เล็กลงจาก h-52 เป็น h-40 -->
+                    <img src="1750754404294-Photoroom.png" alt="GSRT Logo"
+                        class="h-40 w-auto drop-shadow-2xl filter transition-transform duration-500 rounded-full border-2 border-white/10 hover:scale-110 hover:brightness-110 hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                    <div
+                        class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-xs text-gray-400 whitespace-nowrap">
                         เยี่ยมชมเพจสายการเรียน
                     </div>
                 </a>
             </div>
 
-            <div class="mb-6 inline-block px-3 py-1 border border-white/20 rounded-full glass-panel fade-in-up delay-100">
-                <span class="text-xs uppercase tracking-[0.2em] text-gray-400">AI-Powered Sign Language Translator</span>
+            <div
+                class="mb-6 inline-block px-3 py-1 border border-white/20 rounded-full glass-panel fade-in-up delay-100 pointer-events-auto">
+                <span class="text-xs uppercase tracking-[0.2em] text-gray-400">AI-Powered Sign Language
+                    Translator</span>
             </div>
+
+            <!-- Title without Glow and with Monochromatic Color -->
+            <!-- ลบคลาส text-glow ออก และเปลี่ยน span ให้เป็นสีขาวดำธรรมดา -->
             <h1 class="text-6xl md:text-8xl font-bold text-white mb-6 font-tech tracking-tight fade-in-up delay-200">
-                ECHO <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-600">GLOVE</span>
+                ECHO <span class="text-gray-300">GLOVE</span>
             </h1>
-            <p class="text-xl md:text-2xl font-light text-gray-400 mb-10 max-w-2xl mx-auto fade-in-up delay-300">
+
+            <p
+                class="text-xl md:text-2xl font-light text-gray-400 mb-10 max-w-2xl mx-auto fade-in-up delay-300 drop-shadow-md">
                 เปลี่ยนความเงียบให้มีเสียง... ถุงมืออัจฉริยะที่เชื่อมต่อโลกแห่งภาษามือด้วยเทคโนโลยี TinyML บน Arduino
             </p>
-            <div class="flex justify-center gap-4 fade-in-up delay-400">
-                <a href="#technology" class="group relative px-8 py-3 bg-white text-black font-semibold tracking-wider hover:bg-gray-200 transition-all duration-300">
-                    เรียนรู้เพิ่มเติม
-                    <div class="absolute inset-0 border border-white translate-x-1 translate-y-1 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-300 pointer-events-none"></div>
+            <div class="flex justify-center gap-4 fade-in-up delay-400 pointer-events-auto">
+                <!-- เรียนรู้เพิ่มเติม Button (Glass Style) -->
+                <a href="#technology" class="hero-glass-btn group">
+                    <span class="shimmer"></span>
+                    <span>เรียนรู้เพิ่มเติม</span>
+                    <i data-lucide="arrow-down" class="w-4 h-4 group-hover:translate-y-1 transition-transform"></i>
                 </a>
-                <a href="#demo" class="px-8 py-3 border border-white/30 text-white hover:bg-white/5 transition-all duration-300 tracking-wider flex items-center gap-2">
-                    <i data-lucide="play-circle" class="w-4 h-4"></i> ชมการสาธิต
+
+                <!-- ชมการสาธิต Button (Glass Style) -->
+                <a href="#demo" class="hero-glass-btn group">
+                    <span class="shimmer"></span>
+                    <i data-lucide="play-circle" class="w-4 h-4"></i>
+                    <span>ชมการสาธิต</span>
                 </a>
             </div>
         </div>
-        
+
         <!-- Scroll Indicator -->
-        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce z-20 opacity-50">
+        <div
+            class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce z-20 opacity-50 pointer-events-none">
             <i data-lucide="chevron-down" class="w-6 h-6 text-white"></i>
         </div>
     </section>
@@ -238,23 +469,132 @@
                     <h2 class="text-4xl font-bold text-white mb-6 font-tech uppercase tracking-wide">The Vision</h2>
                     <div class="h-1 w-20 bg-gray-700 mb-8"></div>
                     <p class="text-gray-400 text-lg leading-relaxed mb-6 font-light">
-                        ในโลกปัจจุบัน การสื่อสารคือหัวใจสำคัญ แต่ผู้พิการทางการได้ยินยังคงเผชิญกับกำแพงภาษาเมื่อต้องสื่อสารกับคนทั่วไปที่ไม่เข้าใจภาษามือ
+                        ในโลกปัจจุบัน การสื่อสารคือหัวใจสำคัญ
+                        แต่ผู้พิการทางการได้ยินยังคงเผชิญกับกำแพงภาษาเมื่อต้องสื่อสารกับคนทั่วไปที่ไม่เข้าใจภาษามือ
                     </p>
                     <p class="text-gray-400 text-lg leading-relaxed font-light mt-4">
-                        <strong class="text-white">ECHO GLOVE</strong> ถูกสร้างขึ้นเพื่อทำลายกำแพงนั้น ด้วยการผสานรวมเซนเซอร์ตรวจจับการเคลื่อนไหวความละเอียดสูง เข้ากับปัญญาประดิษฐ์ (AI) เพื่อแปลท่าทางมือให้กลายเป็นเสียงพูดแบบ Real-time โดยมุ่งเน้นการใช้งานจริงและพกพาได้สะดวก (Standalone)
+                        <strong class="text-white">ECHO GLOVE</strong> ถูกสร้างขึ้นเพื่อทำลายกำแพงนั้น
+                        ด้วยการผสานรวมเซนเซอร์ตรวจจับการเคลื่อนไหวความละเอียดสูง เข้ากับปัญญาประดิษฐ์ (AI)
+                        เพื่อแปลท่าทางมือให้กลายเป็นเสียงพูดแบบ Real-time โดยมุ่งเน้นการใช้งานจริงและพกพาได้สะดวก
+                        (Standalone)
                     </p>
                 </div>
                 <div class="relative">
                     <div class="absolute inset-0 border border-white/10 translate-x-4 translate-y-4"></div>
                     <!-- Placeholder Image -->
-                    <img src="360_F_407957406_uj72vhmuyqcojNc44Q8D3NXEBpRFKIP4 (1).jpg" alt="Engineering Prototype" class="w-full h-auto transition-all duration-700 relative z-10 shadow-2xl">
+                    <img src="360_F_407957406_uj72vhmuyqcojNc44Q8D3NXEBpRFKIP4 (1).jpg" alt="Engineering Prototype"
+                        class="w-full h-auto transition-all duration-700 relative z-10 shadow-2xl">
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- NEW SECTION: Prototype Evolution (3-Card Grid) -->
+    <section id="evolution" class="py-24 bg-echo-gray border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="text-xs font-bold tracking-[0.3em] text-gray-500 uppercase">Evolution</span>
+                <h2 class="text-4xl font-bold text-white mt-2 font-tech">PROTOTYPE JOURNEY</h2>
+                <p class="text-gray-400 mt-4 font-light">เส้นทางการพัฒนาจากแนวคิดสู่ชิ้นงานจริง</p>
+            </div>
+
+            <!-- Evolution Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative items-start">
+
+                <!-- Prototype 1 -->
+                <div class="relative group">
+                    <div
+                        class="glass-panel p-2 rounded-2xl border border-white/10 hover:border-echo-accent/50 transition-all duration-500 hover:-translate-y-2">
+                        <div
+                            class="relative h-64 overflow-hidden rounded-xl mb-4 bg-gradient-to-br from-gray-900 to-black flex items-center justify-center p-4">
+                            <!-- รูป Prototype 1 -->
+                            <img src="PROTOTYPE _1.jpg" alt="Prototype 1 (Breadboard Testing)"
+                                class="max-w-full max-h-full object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 cursor-pointer"
+                                onclick="event.stopPropagation(); openLightbox('PROTOTYPE _1.jpg', 'Prototype 1 - Breadboard Testing')">
+                            <div
+                                class="absolute top-4 left-4 w-10 h-10 bg-gray-800 text-white flex items-center justify-center rounded-full font-tech font-bold border border-white/20">
+                                01</div>
+                        </div>
+                        <div class="px-4 pb-4">
+                            <h3 class="text-2xl font-bold text-white font-tech">PROTOTYPE 1</h3>
+                            <p class="text-sm text-gray-500 mt-2 font-light">จุดเริ่มต้นของการศึกษาเซนเซอร์ Flex
+                                และการเชื่อมต่อวงจรเบื้องต้นบน Breadboard</p>
+                        </div>
+                    </div>
+                    <!-- Arrow for Desktop -->
+                    <div class="hidden md:block absolute -right-6 top-1/2 -translate-y-1/2 z-10 text-gray-600">
+                        <i data-lucide="chevron-right" class="w-8 h-8 opacity-50"></i>
+                    </div>
+                    <!-- Arrow for Mobile -->
+                    <div class="md:hidden flex justify-center py-4 text-gray-600">
+                        <i data-lucide="chevron-down" class="w-8 h-8 opacity-50"></i>
+                    </div>
+                </div>
+
+                <!-- Prototype 2 -->
+                <div class="relative group">
+                    <div
+                        class="glass-panel p-2 rounded-2xl border border-white/10 hover:border-echo-accent/50 transition-all duration-500 hover:-translate-y-2">
+                        <div
+                            class="relative h-64 overflow-hidden rounded-xl mb-4 bg-gradient-to-br from-gray-900 to-black flex items-center justify-center p-4">
+                            <!-- รูป Prototype 2 -->
+                            <img src="PROTOTYPE _2.jpg" alt="Prototype 2 (First Glove Model)"
+                                class="max-w-full max-h-full object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 cursor-pointer"
+                                onclick="event.stopPropagation(); openLightbox('PROTOTYPE _2.jpg', 'Prototype 2 - First Glove Model')">
+                            <div
+                                class="absolute top-4 left-4 w-10 h-10 bg-gray-700 text-white flex items-center justify-center rounded-full font-tech font-bold border border-white/20">
+                                02</div>
+                        </div>
+                        <div class="px-4 pb-4">
+                            <h3 class="text-2xl font-bold text-white font-tech">PROTOTYPE 2</h3>
+                            <p class="text-sm text-gray-500 mt-2 font-light">พัฒนาสู่การสวมใส่จริง
+                                เริ่มทดสอบกับถุงมือผ้าและเพิ่มโมดูลเสียง DFPlayer</p>
+                        </div>
+                    </div>
+                    <!-- Arrow for Desktop -->
+                    <div class="hidden md:block absolute -right-6 top-1/2 -translate-y-1/2 z-10 text-gray-600">
+                        <i data-lucide="chevron-right" class="w-8 h-8 opacity-50"></i>
+                    </div>
+                    <!-- Arrow for Mobile -->
+                    <div class="md:hidden flex justify-center py-4 text-gray-600">
+                        <i data-lucide="chevron-down" class="w-8 h-8 opacity-50"></i>
+                    </div>
+                </div>
+
+                <!-- Prototype 3 (Under Development) -->
+                <div class="relative group">
+                    <!-- เน้นด้วยขอบสีเหลืองและ Glow แบบ Coming Soon -->
+                    <div
+                        class="glass-panel p-2 rounded-2xl border-2 border-echo-warning/30 shadow-[0_0_30px_rgba(245,158,11,0.15)] hover:border-echo-warning hover:shadow-[0_0_50px_rgba(245,158,11,0.3)] transition-all duration-500 hover:-translate-y-2 transform scale-105 md:scale-100 md:hover:scale-105">
+                        <div
+                            class="relative h-64 overflow-hidden rounded-xl mb-4 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
+                            <!-- Placeholder สำหรับ Prototype 3 ที่กำลังพัฒนา -->
+                            <div class="text-center">
+                                <i data-lucide="wrench"
+                                    class="w-16 h-16 text-echo-warning mx-auto mb-4 animate-pulse"></i>
+                                <p class="text-gray-400 text-sm font-light">อยู่ระหว่างการพัฒนา...</p>
+                            </div>
+                            <div
+                                class="absolute top-4 left-4 w-10 h-10 bg-echo-warning text-white flex items-center justify-center rounded-full font-tech font-bold shadow-lg shadow-yellow-500/50">
+                                03</div>
+                            <div
+                                class="absolute top-4 right-4 px-2 py-1 bg-echo-warning text-white text-[10px] uppercase font-bold rounded tracking-wider shadow-lg animate-pulse">
+                                Coming Soon</div>
+                        </div>
+                        <div class="px-4 pb-4">
+                            <h3 class="text-2xl font-bold text-white font-tech">PROTOTYPE 3</h3>
+                            <p class="text-sm text-echo-warning mt-2 font-light">🚧 กำลังอยู่ในช่วงพัฒนา -
+                                คาดว่าจะแล้วเสร็จเร็วๆ นี้</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
     <!-- Tech Specs Section -->
-    <section id="technology" class="py-24 bg-echo-gray border-t border-white/5">
+    <section id="technology" class="py-24 bg-echo-dark border-t border-white/5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <span class="text-xs font-bold tracking-[0.3em] text-gray-500 uppercase">Core Technology</span>
@@ -264,34 +604,40 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Tech Card 1 -->
                 <div class="glass-panel p-8 hover:bg-white/5 transition-all duration-300 group">
-                    <div class="w-12 h-12 bg-white/10 flex items-center justify-center mb-6 group-hover:bg-white group-hover:text-black transition-colors duration-300">
+                    <div
+                        class="w-12 h-12 bg-white/10 flex items-center justify-center mb-6 group-hover:bg-white group-hover:text-black transition-colors duration-300">
                         <i data-lucide="cpu" class="w-6 h-6"></i>
                     </div>
                     <h3 class="text-xl font-bold text-white mb-3">Arduino Nano 33 BLE Rev2</h3>
                     <p class="text-gray-400 font-light text-sm">
-                        สมองกลฝังตัวขนาดจิ๋วที่ทรงพลัง มาพร้อมเซนเซอร์ IMU (BMI270) 6 แกน ทำงานร่วมกับ Flex Sensor เพื่อความแม่นยำสูงสุด
+                        สมองกลฝังตัวขนาดจิ๋วที่ทรงพลัง มาพร้อมเซนเซอร์ IMU (BMI270) 6 แกน ทำงานร่วมกับ Flex Sensor
+                        เพื่อความแม่นยำสูงสุด
                     </p>
                 </div>
 
                 <!-- Tech Card 2 -->
                 <div class="glass-panel p-8 hover:bg-white/5 transition-all duration-300 group">
-                    <div class="w-12 h-12 bg-white/10 flex items-center justify-center mb-6 group-hover:bg-white group-hover:text-black transition-colors duration-300">
+                    <div
+                        class="w-12 h-12 bg-white/10 flex items-center justify-center mb-6 group-hover:bg-white group-hover:text-black transition-colors duration-300">
                         <i data-lucide="brain-circuit" class="w-6 h-6"></i>
                     </div>
                     <h3 class="text-xl font-bold text-white mb-3">Edge Impulse AI</h3>
                     <p class="text-gray-400 font-light text-sm">
-                        ระบบ TinyML ที่ผ่านการ Train ด้วยข้อมูลท่าทางจริง ช่วยให้ถุงมือสามารถ "เรียนรู้" และแยกแยะภาษามือที่ซับซ้อนได้แบบ Real-time
+                        ระบบ TinyML ที่ผ่านการ Train ด้วยข้อมูลท่าทางจริง ช่วยให้ถุงมือสามารถ "เรียนรู้"
+                        และแยกแยะภาษามือที่ซับซ้อนได้แบบ Real-time
                     </p>
                 </div>
 
                 <!-- Tech Card 3 -->
                 <div class="glass-panel p-8 hover:bg-white/5 transition-all duration-300 group">
-                    <div class="w-12 h-12 bg-white/10 flex items-center justify-center mb-6 group-hover:bg-white group-hover:text-black transition-colors duration-300">
+                    <div
+                        class="w-12 h-12 bg-white/10 flex items-center justify-center mb-6 group-hover:bg-white group-hover:text-black transition-colors duration-300">
                         <i data-lucide="battery-charging" class="w-6 h-6"></i>
                     </div>
                     <h3 class="text-xl font-bold text-white mb-3">Standalone System</h3>
                     <p class="text-gray-400 font-light text-sm">
-                        ทำงานอิสระด้วยแบตเตอรี่ Li-ion 2000 mAh พร้อมโมดูลเสียงในตัว พกพาไปใช้งานได้ทุกที่โดยไม่ต้องต่อคอมพิวเตอร์
+                        ทำงานอิสระด้วยแบตเตอรี่ Li-ion 2000 mAh พร้อมโมดูลเสียงในตัว
+                        พกพาไปใช้งานได้ทุกที่โดยไม่ต้องต่อคอมพิวเตอร์
                     </p>
                 </div>
             </div>
@@ -299,93 +645,114 @@
     </section>
 
     <!-- NEW SECTION: Hardware List -->
-    <section id="hardware" class="py-24 bg-echo-dark border-t border-white/5 relative overflow-hidden">
-        <!-- Decorative Glow -->
-        <div class="absolute top-0 right-0 w-96 h-96 bg-echo-accent/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-
+    <section id="hardware" class="py-24 bg-echo-gray border-t border-white/5 relative overflow-hidden">
+        <div
+            class="absolute top-0 right-0 w-96 h-96 bg-echo-accent/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2">
+        </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center mb-16">
                 <span class="text-xs font-bold tracking-[0.3em] text-gray-500 uppercase">Components</span>
                 <h2 class="text-4xl font-bold text-white mt-2 font-tech">HARDWARE LIST</h2>
-                <p class="text-gray-400 mt-4 max-w-2xl mx-auto font-light">รายการอุปกรณ์ฮาร์ดแวร์หลักที่ใช้ในการขับเคลื่อนนวัตกรรม ECHO GLOVE</p>
+                <p class="text-gray-400 mt-4 max-w-2xl mx-auto font-light">
+                    รายการอุปกรณ์ฮาร์ดแวร์หลักที่ใช้ในการขับเคลื่อนนวัตกรรม ECHO GLOVE</p>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Item 1: Arduino -->
-                <div class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-echo-accent flex flex-col items-center text-center">
-                    <div class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
-                        <img src="Y2686961-01.jpg" alt="Arduino Nano 33 BLE Rev2" class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
+                <div
+                    class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-echo-accent flex flex-col items-center text-center">
+                    <div
+                        class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
+                        <img src="Y2686961-01.jpg" alt="Arduino Nano 33 BLE Rev2"
+                            class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
                     </div>
                     <h4 class="text-white font-bold text-lg mb-2">Arduino Nano 33 BLE Rev2</h4>
                     <p class="text-gray-500 text-sm card-text">หน่วยประมวลผลหลัก พร้อม IMU 6 แกน</p>
                 </div>
-
                 <!-- Item 2: Flex Sensor -->
-                <div class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-purple-500 flex flex-col items-center text-center">
-                    <div class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
-                        <img src="S30ed9c87d8674085b130be9eff875b140.jpg" alt="Flex Sensor" class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
+                <div
+                    class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-purple-500 flex flex-col items-center text-center">
+                    <div
+                        class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
+                        <img src="S30ed9c87d8674085b130be9eff875b140.jpg" alt="Flex Sensor"
+                            class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
                     </div>
                     <h4 class="text-white font-bold text-lg mb-2">Flex Sensor</h4>
                     <p class="text-gray-500 text-sm card-text">เซนเซอร์วัดการโค้งงอของนิ้วมือ</p>
                 </div>
-
                 <!-- Item 3: DFPlayer Mini -->
-                <div class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-pink-500 flex flex-col items-center text-center">
-                    <div class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
-                        <img src="s75-0189p01wj.jpg" alt="DFPlayer Mini" class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
+                <div
+                    class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-pink-500 flex flex-col items-center text-center">
+                    <div
+                        class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
+                        <img src="s75-0189p01wj.jpg" alt="DFPlayer Mini"
+                            class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
                     </div>
                     <h4 class="text-white font-bold text-lg mb-2">DFPlayer Mini</h4>
                     <p class="text-gray-500 text-sm card-text">โมดูลเล่นไฟล์เสียง MP3 จาก SD Card</p>
                 </div>
-
                 <!-- Item 4: Speaker -->
-                <div class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-blue-400 flex flex-col items-center text-center">
-                    <div class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
-                        <img src="S1a8afa7b08d54cfa93350489333eb9faf.jpg" alt="Speaker" class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
+                <div
+                    class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-blue-400 flex flex-col items-center text-center">
+                    <div
+                        class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
+                        <img src="S1a8afa7b08d54cfa93350489333eb9faf.jpg" alt="Speaker"
+                            class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
                     </div>
                     <h4 class="text-white font-bold text-lg mb-2">Speaker</h4>
                     <p class="text-gray-500 text-sm card-text">ลำโพงขนาดเล็กสำหรับเปล่งเสียง</p>
                 </div>
-
                 <!-- Item 5: Power Bank Module -->
-                <div class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-yellow-500 flex flex-col items-center text-center">
-                    <div class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
-                        <img src="aa11a675dc7af55a2c2b575404103114.jpg" alt="Power Bank Module" class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
+                <div
+                    class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-yellow-500 flex flex-col items-center text-center">
+                    <div
+                        class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
+                        <img src="aa11a675dc7af55a2c2b575404103114.jpg" alt="Power Bank Module"
+                            class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
                     </div>
                     <h4 class="text-white font-bold text-lg mb-2">Power Bank Module</h4>
                     <p class="text-gray-500 text-sm card-text">วงจรควบคุมการชาร์จและจ่ายไฟ</p>
                 </div>
-
                 <!-- Item 6: Li-ion Battery -->
-                <div class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-green-500 flex flex-col items-center text-center">
-                    <div class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
-                        <img src="sg-11134201-7rbn8-lpd6lpgwrua05b.jpg" alt="Li-ion Battery" class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
+                <div
+                    class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-green-500 flex flex-col items-center text-center">
+                    <div
+                        class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
+                        <img src="sg-11134201-7rbn8-lpd6lpgwrua05b.jpg" alt="Li-ion Battery"
+                            class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
                     </div>
                     <h4 class="text-white font-bold text-lg mb-2">Li-ion Battery</h4>
                     <p class="text-gray-500 text-sm card-text">แบตเตอรี่ความจุ 2000 mAh 1 ก้อน</p>
                 </div>
-
                 <!-- Item 7: SD Card -->
-                <div class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-red-500 flex flex-col items-center text-center">
-                    <div class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
-                        <img src="S956ed204dc224aa1945f4789cceeb65aj.jpg" alt="SD Card" class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
+                <div
+                    class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-red-500 flex flex-col items-center text-center">
+                    <div
+                        class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
+                        <img src="S956ed204dc224aa1945f4789cceeb65aj.jpg" alt="SD Card"
+                            class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
                     </div>
                     <h4 class="text-white font-bold text-lg mb-2">SD Card</h4>
                     <p class="text-gray-500 text-sm card-text">หน่วยความจำสำหรับเก็บไฟล์เสียง</p>
                 </div>
-
                 <!-- Item 8: Resistor -->
-                <div class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-orange-500 flex flex-col items-center text-center">
-                    <div class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
-                        <img src="61-roUmK6NL._AC_UF1000,1000_QL80_.jpg" alt="Resistor" class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
+                <div
+                    class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-orange-500 flex flex-col items-center text-center">
+                    <div
+                        class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
+                        <img src="61-roUmK6NL._AC_UF1000,1000_QL80_.jpg" alt="Resistor"
+                            class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
                     </div>
                     <h4 class="text-white font-bold text-lg mb-2">Resistor 1kΩ</h4>
                     <p class="text-gray-500 text-sm card-text">ตัวต้านทานสำหรับวงจร Flex Sensor</p>
                 </div>
-                
-                 <div class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-cyan-500 flex flex-col items-center text-center">
-                    <div class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
-                        <img src="y0.jpg" alt="Capacitor" class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
+                <!-- Item 9: Capacitor -->
+                <div
+                    class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-cyan-500 flex flex-col items-center text-center">
+                    <div
+                        class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
+                        <img src="y0.jpg" alt="Capacitor"
+                            class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
                     </div>
                     <h4 class="text-white font-bold text-lg mb-2">Capacitor 2200µF</h4>
                     <p class="text-gray-500 text-sm card-text">ตัวเก็บประจุช่วยกรองกระแสไฟให้เรียบ</p>
@@ -395,128 +762,218 @@
     </section>
 
     <!-- Experimental Results -->
-    <section id="results" class="py-24 bg-echo-gray border-t border-white/5">
+    <section id="results" class="py-24 bg-echo-dark border-t border-white/5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
                 <div>
-                    <span class="text-xs font-bold tracking-[0.3em] text-echo-success uppercase">Experimental Results</span>
+                    <span class="text-xs font-bold tracking-[0.3em] text-echo-success uppercase">Experimental
+                        Results</span>
                     <h2 class="text-4xl font-bold text-white mt-2 mb-6 font-tech">ACCURACY TEST</h2>
                     <p class="text-gray-400 font-light mb-8">
-                        ผลการทดสอบประสิทธิภาพความแม่นยำในการตรวจจับการงอนิ้ว (Flex Sensor) จากการทดสอบจำนวน 20 ครั้งต่อท่าทาง พบว่าระบบสามารถทำงานได้อย่างมีประสิทธิภาพ
+                        ผลการทดสอบประสิทธิภาพความแม่นยำในการตรวจจับการงอนิ้ว (Flex Sensor) จากการทดสอบจำนวน 20
+                        ครั้งต่อท่าทาง พบว่าระบบสามารถทำงานได้อย่างมีประสิทธิภาพ
                     </p>
-                    
+
                     <div class="space-y-6">
+                        <!-- F1 Pinky -->
                         <div>
                             <div class="flex justify-between mb-2">
                                 <span class="text-sm font-bold text-white">นิ้วก้อย (Pinky Finger)</span>
                                 <span class="text-sm font-bold text-echo-success">100%</span>
                             </div>
                             <div class="w-full bg-gray-800 rounded-full h-2">
-                                <div class="bg-echo-success h-2 rounded-full progress-bar" style="width: 0%" data-width="100%"></div>
+                                <div class="bg-echo-success h-2 rounded-full progress-bar" style="width: 0%"
+                                    data-width="100%"></div>
                             </div>
                         </div>
+                        <!-- F2 Ring -->
                         <div>
                             <div class="flex justify-between mb-2">
                                 <span class="text-sm font-bold text-white">นิ้วนาง (Ring Finger)</span>
                                 <span class="text-sm font-bold text-echo-success">100%</span>
                             </div>
                             <div class="w-full bg-gray-800 rounded-full h-2">
-                                <div class="bg-echo-success h-2 rounded-full progress-bar" style="width: 0%" data-width="100%"></div>
+                                <div class="bg-echo-success h-2 rounded-full progress-bar" style="width: 0%"
+                                    data-width="100%"></div>
                             </div>
                         </div>
+                        <!-- F3 Middle -->
                         <div>
                             <div class="flex justify-between mb-2">
                                 <span class="text-sm font-bold text-white">นิ้วกลาง (Middle Finger)</span>
                                 <span class="text-sm font-bold text-echo-success">90%</span>
                             </div>
                             <div class="w-full bg-gray-800 rounded-full h-2">
-                                <div class="bg-echo-success h-2 rounded-full progress-bar" style="width: 0%" data-width="90%"></div>
+                                <div class="bg-echo-success h-2 rounded-full progress-bar" style="width: 0%"
+                                    data-width="90%"></div>
                             </div>
                         </div>
+                        <!-- F5 Thumb -->
                         <div>
                             <div class="flex justify-between mb-2">
                                 <span class="text-sm font-bold text-white">นิ้วโป้ง (Thumb)</span>
                                 <span class="text-sm font-bold text-echo-success">90%</span>
                             </div>
                             <div class="w-full bg-gray-800 rounded-full h-2">
-                                <div class="bg-echo-success h-2 rounded-full progress-bar" style="width: 0%" data-width="90%"></div>
+                                <div class="bg-echo-success h-2 rounded-full progress-bar" style="width: 0%"
+                                    data-width="90%"></div>
                             </div>
                         </div>
+                        <!-- F4 Index -->
                         <div>
                             <div class="flex justify-between mb-2">
                                 <span class="text-sm font-bold text-white">นิ้วชี้ (Index Finger)</span>
                                 <span class="text-sm font-bold text-echo-warning">60%</span>
                             </div>
                             <div class="w-full bg-gray-800 rounded-full h-2">
-                                <div class="bg-echo-warning h-2 rounded-full progress-bar" style="width: 0%" data-width="60%"></div>
+                                <div class="bg-echo-warning h-2 rounded-full progress-bar" style="width: 0%"
+                                    data-width="60%"></div>
                             </div>
-                            <p class="text-xs text-gray-500 mt-2">*อยู่ในระหว่างการปรับจูนค่า Threshold เพื่อเพิ่มประสิทธิภาพ</p>
+                            <p class="text-xs text-gray-500 mt-2">*อยู่ในระหว่างการปรับจูนค่า Threshold
+                                เพื่อเพิ่มประสิทธิภาพ</p>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="flex flex-col justify-center items-center relative">
                     <div class="relative">
-                        <div class="radial-progress flex items-center justify-center" style="--target-progress: 324deg;">
-                            <div class="bg-echo-dark w-[160px] h-[160px] rounded-full flex items-center justify-center relative z-10">
+                        <!-- SVG Radial Progress -->
+                        <div class="relative w-[180px] h-[180px]">
+                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 180 180">
+                                <!-- Background Circle -->
+                                <circle cx="90" cy="90" r="80" fill="none" stroke="#1f1f1f" stroke-width="12" />
+                                <!-- Progress Circle -->
+                                <circle id="progress-circle" cx="90" cy="90" r="80" fill="none" stroke="#3b82f6"
+                                    stroke-width="12" stroke-linecap="round" stroke-dasharray="502.4"
+                                    stroke-dashoffset="502.4"
+                                    style="transition: stroke-dashoffset 2s cubic-bezier(0.4, 0, 0.2, 1);" />
+                            </svg>
+                            <!-- Center Content -->
+                            <div
+                                class="absolute inset-0 flex items-center justify-center bg-echo-dark rounded-full m-[10px]">
                                 <div class="text-center">
                                     <h3 class="text-6xl font-bold text-white font-tech leading-none">
-                                        <span id="accuracy-counter">0</span><span class="text-2xl text-echo-accent">%</span>
+                                        <span id="accuracy-counter">0</span><span
+                                            class="text-2xl text-echo-accent">%</span>
                                     </h3>
                                 </div>
                             </div>
                         </div>
-                        <div class="absolute inset-0 bg-echo-accent/30 blur-3xl rounded-full z-0 transform scale-125 opacity-60"></div>
+                        <!-- Glow Effect -->
+                        <div
+                            class="absolute inset-0 bg-echo-accent/30 blur-3xl rounded-full z-0 transform scale-125 opacity-60 -z-10">
+                        </div>
                     </div>
                     <div class="mt-8 text-center fade-in-up delay-200">
-                         <h4 class="text-white font-bold uppercase tracking-wider text-xl">Overall Accuracy</h4>
-                         <p class="text-gray-500 text-sm font-light mt-1">ความแม่นยำเฉลี่ยของระบบ</p>
+                        <h4 class="text-white font-bold uppercase tracking-wider text-xl">Overall Accuracy</h4>
+                        <p class="text-gray-500 text-sm font-light mt-1">ความแม่นยำเฉลี่ยของระบบ</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- How It Works Section (Expanded SVG with Moved Red Box) -->
-    <section id="howitworks" class="py-24 bg-echo-dark border-t border-white/5">
+    <!-- How It Works Section (Flowchart) -->
+    <section id="howitworks" class="py-24 bg-echo-gray border-t border-white/5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col items-center">
-                
+
                 <div class="text-center mb-12">
                     <span class="text-xs font-bold tracking-[0.3em] text-gray-500 uppercase">System Logic</span>
                     <h2 class="text-4xl font-bold text-white mt-2 font-tech">HOW IT WORKS</h2>
-                    <p class="text-gray-400 mt-4 max-w-2xl mx-auto font-light">หลักการทำงานอย่างง่ายของระบบ ECHO GLOVE</p>
+                    <p class="text-gray-400 mt-4 max-w-2xl mx-auto font-light">หลักการทำงานอย่างง่ายของระบบ ECHO GLOVE
+                    </p>
                 </div>
 
                 <!-- Resized SVG and Text Positioning -->
-                <div class="w-full max-w-3xl relative group p-10 border border-white/10 rounded-xl bg-white/5 backdrop-blur-sm shadow-2xl hover:border-echo-accent/30 transition-all duration-300">
+                <div
+                    class="w-full max-w-3xl relative group p-10 border border-white/10 rounded-xl bg-white/5 backdrop-blur-sm shadow-2xl hover:border-echo-accent/30 transition-all duration-300">
                     <!-- Adjusted viewbox to fit larger height and width -->
                     <svg viewBox="0 0 800 1150" class="w-full h-auto drop-shadow-lg" xmlns="http://www.w3.org/2000/svg">
                         <style>
-                            .flow-text { font-family: 'Kanit', sans-serif; font-size: 18px; fill: white; text-anchor: middle; font-weight: 300; }
-                            .flow-box { fill: rgba(30, 30, 30, 0.9); stroke: #3b82f6; stroke-width: 2; rx: 12; }
-                            .flow-decision { fill: rgba(30, 30, 30, 0.9); stroke: #f59e0b; stroke-width: 2; }
-                            .flow-process-alert { fill: rgba(30, 30, 30, 0.9); stroke: #ef4444; stroke-width: 2; stroke-dasharray: 4; rx: 12; }
-                            .flow-start { fill: #10b981; stroke: none; rx: 25; }
-                            .flow-end { fill: #ef4444; stroke: none; rx: 25; }
-                            .flow-line { stroke: #6b7280; stroke-width: 2; fill: none; marker-end: url(#arrow); }
-                            .flow-line-dotted { stroke: #6b7280; stroke-width: 2; fill: none; stroke-dasharray: 4; marker-end: url(#arrow); }
-                            .flow-label { font-family: 'Kanit', sans-serif; font-size: 14px; fill: #9ca3af; }
+                            .flow-text {
+                                font-family: 'Kanit', sans-serif;
+                                font-size: 18px;
+                                fill: white;
+                                text-anchor: middle;
+                                font-weight: 300;
+                            }
+
+                            .flow-box {
+                                fill: rgba(30, 30, 30, 0.9);
+                                stroke: #3b82f6;
+                                stroke-width: 2;
+                                rx: 12;
+                            }
+
+                            .flow-decision {
+                                fill: rgba(30, 30, 30, 0.9);
+                                stroke: #f59e0b;
+                                stroke-width: 2;
+                            }
+
+                            .flow-process-alert {
+                                fill: rgba(30, 30, 30, 0.9);
+                                stroke: #ef4444;
+                                stroke-width: 2;
+                                stroke-dasharray: 4;
+                                rx: 12;
+                            }
+
+                            .flow-start {
+                                fill: #10b981;
+                                stroke: none;
+                                rx: 25;
+                            }
+
+                            .flow-end {
+                                fill: #ef4444;
+                                stroke: none;
+                                rx: 25;
+                            }
+
+                            .flow-line {
+                                stroke: #6b7280;
+                                stroke-width: 2;
+                                fill: none;
+                                marker-end: url(#arrow);
+                            }
+
+                            .flow-line-dotted {
+                                stroke: #6b7280;
+                                stroke-width: 2;
+                                fill: none;
+                                stroke-dasharray: 4;
+                                marker-end: url(#arrow);
+                            }
+
+                            .flow-label {
+                                font-family: 'Kanit', sans-serif;
+                                font-size: 14px;
+                                fill: #9ca3af;
+                            }
+
                             /* White text for 'No' label as requested */
-                            .flow-label-no { font-family: 'Kanit', sans-serif; font-size: 16px; fill: white; font-weight: bold; }
+                            .flow-label-no {
+                                font-family: 'Kanit', sans-serif;
+                                font-size: 16px;
+                                fill: white;
+                                font-weight: bold;
+                            }
                         </style>
                         <defs>
-                            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"
+                                markerUnits="strokeWidth">
                                 <path d="M0,0 L0,6 L9,3 z" fill="#6b7280" />
                             </marker>
                         </defs>
-                        
+
                         <!-- Center X = 450 -->
-                        
+
                         <!-- 1. Start Node -->
                         <rect x="350" y="25" width="200" height="50" class="flow-start" />
                         <text x="450" y="55" class="flow-text" font-weight="bold">เริ่มต้นการทำงาน (Start)</text>
-                        
+
                         <path d="M450,75 L450,120" class="flow-line" />
 
                         <!-- 2. Check Equip -->
@@ -535,7 +992,7 @@
                         <path d="M300,290 L250,290" class="flow-line" />
                         <!-- White 'No' text -->
                         <text x="275" y="280" class="flow-label-no">ไม่ (No)</text>
-                        
+
                         <!-- Red Box Moved Clear Left (x=50, width=200) -->
                         <rect x="50" y="250" width="200" height="80" class="flow-process-alert" />
                         <text x="150" y="285" class="flow-text" font-size="14px">แจ้งเตือน / รอใส่ SD</text>
@@ -544,7 +1001,7 @@
                         <!-- Loop back from Alert to Check Equip -->
                         <!-- From box top center (150, 250) -> Up to 150 -> Right to Check Equip left edge (330) -->
                         <path d="M150,250 L150,150 L330,150" class="flow-line-dotted" />
-                        
+
                         <!-- Line Yes (Down) -->
                         <path d="M450,350 L450,420" class="flow-line" />
                         <text x="460" y="380" class="flow-label">ใช่ (Yes)</text>
@@ -552,14 +1009,16 @@
                         <!-- 4. Receive Sensors -->
                         <rect x="320" y="420" width="260" height="70" class="flow-box" />
                         <text x="450" y="455" class="flow-text">รับค่าจากเซ็นเซอร์</text>
-                        <text x="450" y="475" class="flow-text" font-size="14px" fill="#aaa">Flex Sensors (นิ้ว) + IMU (ข้อมือ)</text>
+                        <text x="450" y="475" class="flow-text" font-size="14px" fill="#aaa">Flex Sensors (นิ้ว) + IMU
+                            (ข้อมือ)</text>
 
                         <path d="M450,490 L450,540" class="flow-line" />
 
                         <!-- 5. AI Process -->
                         <rect x="320" y="540" width="260" height="70" class="flow-box" style="stroke: #8b5cf6;" />
                         <text x="450" y="575" class="flow-text">AI ประมวลผลท่าทาง</text>
-                        <text x="450" y="595" class="flow-text" font-size="14px" fill="#aaa">เทียบข้อมูลกับโมเดลที่เรียนรู้มา</text>
+                        <text x="450" y="595" class="flow-text" font-size="14px"
+                            fill="#aaa">เทียบข้อมูลกับโมเดลที่เรียนรู้มา</text>
 
                         <path d="M450,610 L450,680" class="flow-line" />
 
@@ -580,12 +1039,13 @@
                         <!-- 7. Output Voice -->
                         <rect x="320" y="860" width="260" height="70" class="flow-box" style="stroke: #10b981;" />
                         <text x="450" y="890" class="flow-text" font-weight="bold">เปล่งเสียงพูด</text>
-                        <text x="450" y="910" class="flow-text" font-size="14px" fill="#aaa">ส่งไฟล์เสียงออกทางลำโพง</text>
-                        
+                        <text x="450" y="910" class="flow-text" font-size="14px"
+                            fill="#aaa">ส่งไฟล์เสียงออกทางลำโพง</text>
+
                         <!-- 8. End Node -->
-                         <path d="M450,930 L450,980" class="flow-line" />
-                         <rect x="350" y="980" width="200" height="60" class="flow-end" />
-                         <text x="450" y="1015" class="flow-text" font-weight="bold">จบโปรแกรม (End)</text>
+                        <path d="M450,930 L450,980" class="flow-line" />
+                        <rect x="350" y="980" width="200" height="60" class="flow-end" />
+                        <text x="450" y="1015" class="flow-text" font-weight="bold">จบโปรแกรม (End)</text>
 
                     </svg>
                 </div>
@@ -594,43 +1054,42 @@
     </section>
 
     <!-- Demo Section -->
-    <section id="demo" class="py-24 bg-echo-gray border-t border-white/5 relative">
+    <section id="demo" class="py-24 bg-echo-dark border-t border-white/5 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <span class="text-xs font-bold tracking-[0.3em] text-echo-accent uppercase">Live Action</span>
                 <h2 class="text-4xl font-bold text-white mt-2 font-tech">DEMONSTRATION</h2>
-                <p class="text-gray-400 mt-4 max-w-2xl mx-auto font-light">ชมการทดสอบการทำงานจริงของ ECHO GLOVE ในการแปลภาษามือเป็นเสียงพูด</p>
+                <p class="text-gray-400 mt-4 max-w-2xl mx-auto font-light">ชมการทดสอบการทำงานจริงของ ECHO GLOVE
+                    ในการแปลภาษามือเป็นเสียงพูด</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center">
                 <!-- Video 1: 1768016250549.mp4 -->
                 <div class="glass-panel p-2 hover:border-white/20 transition-all duration-300">
                     <div class="relative w-full aspect-video bg-black overflow-hidden rounded-lg group">
-                        <iframe 
-                            src="https://drive.google.com/file/d/1DcgXn-o0NHzLqJ0NLXI9hhabuE4MPHbl/preview" 
-                            class="absolute top-0 left-0 w-full h-full"
-                            allow="autoplay"
-                            allowfullscreen>
+                        <iframe src="https://drive.google.com/file/d/1DcgXn-o0NHzLqJ0NLXI9hhabuE4MPHbl/preview"
+                            class="absolute top-0 left-0 w-full h-full" allow="autoplay" allowfullscreen>
                         </iframe>
                     </div>
                     <div class="p-4">
-                        <h4 class="text-white font-bold text-lg">ทดสอบการใช้งานของเซนเซอร์ IMU<br><span class="text-sm font-light text-gray-400">(IMU คือ เซนเซอร์วัดความเร่ง ความเอียง การหมุน นำมาใช้ตรวจจับเมื่อเราขยับมือ)</span></h4>
+                        <h4 class="text-white font-bold text-lg">ทดสอบการใช้งานของเซนเซอร์ IMU<br><span
+                                class="text-sm font-light text-gray-400">(IMU คือ เซนเซอร์วัดความเร่ง ความเอียง การหมุน
+                                นำมาใช้ตรวจจับเมื่อเราขยับมือ)</span></h4>
                         <p class="text-gray-500 text-xs mt-1">ทดสอบความแม่นยำในการแปลงท่าทางเป็นคำพูดด้วยโมเดล AI</p>
                     </div>
                 </div>
 
                 <!-- Video 2: 1216.mp4 -->
                 <div class="glass-panel p-2 hover:border-white/20 transition-all duration-300">
-                     <div class="relative w-full aspect-video bg-black overflow-hidden rounded-lg group">
-                        <iframe 
-                            src="https://drive.google.com/file/d/1uC1QgtlUR0pqE6Hc7fqLRySYoSZIOfr8/preview" 
-                            class="absolute top-0 left-0 w-full h-full"
-                            allow="autoplay"
-                            allowfullscreen>
+                    <div class="relative w-full aspect-video bg-black overflow-hidden rounded-lg group">
+                        <iframe src="https://drive.google.com/file/d/1uC1QgtlUR0pqE6Hc7fqLRySYoSZIOfr8/preview"
+                            class="absolute top-0 left-0 w-full h-full" allow="autoplay" allowfullscreen>
                         </iframe>
                     </div>
                     <div class="p-4">
-                        <h4 class="text-white font-bold text-lg">การทดสอบการใช้งานของ Flex Sensor<br><span class="text-sm font-light text-gray-400">(Flex Sensor คือ เซ็นเซอร์วัดการโค้งงอของนิ้วมือ)</span></h4>
+                        <h4 class="text-white font-bold text-lg">การทดสอบการใช้งานของ Flex Sensor<br><span
+                                class="text-sm font-light text-gray-400">(Flex Sensor คือ
+                                เซ็นเซอร์วัดการโค้งงอของนิ้วมือ)</span></h4>
                         <p class="text-gray-500 text-xs mt-1">โดยที่ใช้ 1 นิ้ว 1 เสียง</p>
                     </div>
                 </div>
@@ -649,7 +1108,8 @@
                 <div class="text-right">
                     <p class="text-gray-400 text-sm font-light">จัดทำโดย</p>
                     <p class="text-xl text-white font-bold mt-1">สมาชิคกลุ่ม ECHO GLOVE</p>
-                    <p class="text-gray-500 text-xs mt-1 uppercase tracking-widest">นักเรียนชั้นมัธยมศึกษาปีที่ 5/4 GSRT & AI</p>
+                    <p class="text-gray-500 text-xs mt-1 uppercase tracking-widest">นักเรียนชั้นมัธยมศึกษาปีที่ 5/4 GSRT
+                        & AI</p>
                 </div>
             </div>
             <div class="mt-16 pt-8 border-t border-white/5 text-center text-gray-600 text-xs">
@@ -659,28 +1119,74 @@
     </footer>
 
     <!-- School Link Modal -->
-    <div id="schoolModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/80 backdrop-blur-sm opacity-0 transition-opacity duration-300">
-        <div class="glass-panel p-8 rounded-2xl max-w-sm w-full mx-4 text-center transform scale-95 transition-transform duration-300" id="schoolModalContent">
+    <div id="schoolModal"
+        class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/80 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+        <div class="glass-panel p-8 rounded-2xl max-w-sm w-full mx-4 text-center transform scale-95 transition-transform duration-300"
+            id="schoolModalContent">
             <h3 class="text-2xl font-bold text-white mb-6 font-tech tracking-wider">เลือกช่องทางติดต่อ</h3>
             <div class="space-y-4">
-                <a href="https://www.tupp.ac.th/" target="_blank" class="block w-full py-4 px-4 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all duration-300 border border-white/10 flex items-center justify-center gap-3 group">
+                <a href="https://www.tupp.ac.th/" target="_blank"
+                    class="block w-full py-4 px-4 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all duration-300 border border-white/10 flex items-center justify-center gap-3 group">
                     <i data-lucide="globe" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
                     <span class="font-light">เว็บไซต์โรงเรียน (tupp.ac.th)</span>
                 </a>
-                <a href="https://www.facebook.com/Iam.TUPP/?locale=th_TH" target="_blank" class="block w-full py-4 px-4 bg-[#1877F2] hover:bg-[#166fe5] text-white rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg shadow-blue-900/20 group">
+                <a href="https://www.facebook.com/Iam.TUPP/?locale=th_TH" target="_blank"
+                    class="block w-full py-4 px-4 bg-[#1877F2] hover:bg-[#166fe5] text-white rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg shadow-blue-900/20 group">
                     <i data-lucide="facebook" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
                     <span class="font-light">Facebook โรงเรียน</span>
                 </a>
             </div>
-            <button onclick="closeSchoolModal()" class="mt-8 text-gray-500 hover:text-white text-sm transition-colors duration-300 flex items-center justify-center gap-2 mx-auto">
+            <button onclick="closeSchoolModal()"
+                class="mt-8 text-gray-500 hover:text-white text-sm transition-colors duration-300 flex items-center justify-center gap-2 mx-auto">
                 <i data-lucide="x" class="w-4 h-4"></i> ปิดหน้าต่าง
             </button>
+        </div>
+    </div>
+
+    <!-- Image Lightbox Modal -->
+    <div id="imageLightbox"
+        class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-md opacity-0 transition-opacity duration-300 cursor-zoom-out"
+        onclick="closeLightbox()">
+        <div class="relative max-w-[90vw] max-h-[90vh] transform scale-95 transition-transform duration-300"
+            id="lightboxContent">
+            <img id="lightboxImage" src="" alt="Fullscreen Image"
+                class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl">
+            <button onclick="closeLightbox()"
+                class="absolute -top-4 -right-4 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all duration-300 backdrop-blur-sm border border-white/20">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <p id="lightboxCaption"
+                class="absolute -bottom-10 left-1/2 transform -translate-x-1/2 text-white/70 text-sm whitespace-nowrap">
+            </p>
         </div>
     </div>
 
     <!-- Initialize Icons & Scroll Animations -->
     <script>
         lucide.createIcons();
+
+        // Theme Toggle Logic
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+            html.setAttribute('data-theme', newTheme);
+
+            // Toggle Icons
+            const darkIcon = document.querySelector('.dark-icon');
+            const lightIcon = document.querySelector('.light-icon');
+
+            if (newTheme === 'light') {
+                darkIcon.classList.add('hidden');
+                lightIcon.classList.remove('hidden');
+            } else {
+                darkIcon.classList.remove('hidden');
+                lightIcon.classList.add('hidden');
+            }
+        }
+
+        // Modal Functions
         function openSchoolModal() {
             const modal = document.getElementById('schoolModal');
             const content = document.getElementById('schoolModalContent');
@@ -701,12 +1207,42 @@
                 modal.classList.add('hidden');
             }, 300);
         }
-        document.getElementById('schoolModal').addEventListener('click', function(e) {
+
+        // Lightbox Functions
+        function openLightbox(imageSrc, caption) {
+            const lightbox = document.getElementById('imageLightbox');
+            const content = document.getElementById('lightboxContent');
+            const image = document.getElementById('lightboxImage');
+            const captionEl = document.getElementById('lightboxCaption');
+
+            image.src = imageSrc;
+            captionEl.textContent = caption || '';
+            lightbox.classList.remove('hidden');
+
+            setTimeout(() => {
+                lightbox.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+                lucide.createIcons();
+            }, 10);
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('imageLightbox');
+            const content = document.getElementById('lightboxContent');
+            lightbox.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                lightbox.classList.add('hidden');
+            }, 300);
+        }
+        document.getElementById('schoolModal').addEventListener('click', function (e) {
             if (e.target === this) {
                 closeSchoolModal();
             }
         });
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const observerOptions = { root: null, rootMargin: '0px', threshold: 0.2 };
             const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
@@ -715,13 +1251,18 @@
                         if (element.classList.contains('progress-bar')) {
                             const targetWidth = element.getAttribute('data-width');
                             element.style.width = targetWidth;
-                        } 
-                        else if (element.classList.contains('radial-progress')) {
-                            element.classList.add('animate-radial');
+                        }
+                        else if (element.id === 'progress-circle') {
+                            // Animate SVG circle (90% = circumference * 0.1 offset)
+                            // circumference = 2 * π * 80 = 502.4
+                            // 90% progress = 502.4 * 0.1 = 50.24 offset
+                            element.style.strokeDashoffset = '50.24';
+
+                            // Animate counter
                             const counter = document.getElementById('accuracy-counter');
                             const targetValue = 90;
                             const duration = 2000;
-                            const frameDuration = 1000 / 60; 
+                            const frameDuration = 1000 / 60;
                             const totalFrames = Math.round(duration / frameDuration);
                             let frame = 0;
                             const countUp = setInterval(() => {
@@ -736,10 +1277,23 @@
                     }
                 });
             }, observerOptions);
-            document.querySelectorAll('.progress-bar, .radial-progress').forEach(el => {
+            document.querySelectorAll('.progress-bar, #progress-circle').forEach(el => {
                 observer.observe(el);
             });
         });
+
+        // --- Spotlight Hero Effect Logic ---
+        document.addEventListener('mousemove', e => {
+            const hero = document.getElementById('hero-section');
+            if (hero) {
+                const rect = hero.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                hero.style.setProperty('--mouse-x', `${x}px`);
+                hero.style.setProperty('--mouse-y', `${y}px`);
+            }
+        });
     </script>
 </body>
+
 </html>
