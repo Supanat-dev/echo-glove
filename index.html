@@ -505,15 +505,29 @@
                 <div class="relative group">
                     <div
                         class="glass-panel p-2 rounded-2xl border border-white/10 hover:border-echo-accent/50 transition-all duration-500 hover:-translate-y-2">
-                        <div
-                            class="relative h-64 overflow-hidden rounded-xl mb-4 bg-gradient-to-br from-gray-900 to-black flex items-center justify-center p-4">
+                        <div class="relative h-64 overflow-hidden rounded-xl mb-4 bg-gradient-to-br from-gray-900 to-black flex items-center justify-center p-4 cursor-pointer"
+                            onclick="openPrototype1Gallery()">
                             <!-- รูป Prototype 1 -->
-                            <img src="PROTOTYPE _1.jpg" alt="Prototype 1 (Breadboard Testing)"
-                                class="max-w-full max-h-full object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 cursor-pointer"
-                                onclick="event.stopPropagation(); openLightbox('PROTOTYPE _1.jpg', 'Prototype 1 - Breadboard Testing')">
+                            <img src="PROTOTYPE_1_1.jpg" alt="Prototype 1 (Breadboard Testing)"
+                                class="max-w-full max-h-full object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
                             <div
                                 class="absolute top-4 left-4 w-10 h-10 bg-gray-800 text-white flex items-center justify-center rounded-full font-tech font-bold border border-white/20">
                                 01</div>
+                            <!-- Gallery indicator badge -->
+                            <div
+                                class="absolute top-4 right-4 flex items-center gap-1 px-2 py-1 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 text-white text-xs">
+                                <i data-lucide="images" class="w-3 h-3"></i>
+                                <span>5</span>
+                            </div>
+                            <!-- Hover overlay -->
+                            <div
+                                class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+                                <div
+                                    class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white flex flex-col items-center">
+                                    <i data-lucide="expand" class="w-8 h-8 mb-2"></i>
+                                    <span class="text-sm font-light">คลิกเพื่อดูรูปเพิ่มเติม</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="px-4 pb-4">
                             <h3 class="text-2xl font-bold text-white font-tech">PROTOTYPE 1</h3>
@@ -535,15 +549,29 @@
                 <div class="relative group">
                     <div
                         class="glass-panel p-2 rounded-2xl border border-white/10 hover:border-echo-accent/50 transition-all duration-500 hover:-translate-y-2">
-                        <div
-                            class="relative h-64 overflow-hidden rounded-xl mb-4 bg-gradient-to-br from-gray-900 to-black flex items-center justify-center p-4">
+                        <div class="relative h-64 overflow-hidden rounded-xl mb-4 bg-gradient-to-br from-gray-900 to-black flex items-center justify-center p-4 cursor-pointer"
+                            onclick="openPrototype2Gallery()">
                             <!-- รูป Prototype 2 -->
-                            <img src="PROTOTYPE _2.jpg" alt="Prototype 2 (First Glove Model)"
-                                class="max-w-full max-h-full object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 cursor-pointer"
-                                onclick="event.stopPropagation(); openLightbox('PROTOTYPE _2.jpg', 'Prototype 2 - First Glove Model')">
+                            <img src="PROTOTYPE_2_NEW.jpg" alt="Prototype 2 (First Glove Model)"
+                                class="max-w-full max-h-full object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
                             <div
                                 class="absolute top-4 left-4 w-10 h-10 bg-gray-700 text-white flex items-center justify-center rounded-full font-tech font-bold border border-white/20">
                                 02</div>
+                            <!-- Gallery indicator badge -->
+                            <div
+                                class="absolute top-4 right-4 flex items-center gap-1 px-2 py-1 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 text-white text-xs">
+                                <i data-lucide="images" class="w-3 h-3"></i>
+                                <span>3</span>
+                            </div>
+                            <!-- Hover overlay -->
+                            <div
+                                class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+                                <div
+                                    class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white flex flex-col items-center">
+                                    <i data-lucide="expand" class="w-8 h-8 mb-2"></i>
+                                    <span class="text-sm font-light">คลิกเพื่อดูรูปเพิ่มเติม</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="px-4 pb-4">
                             <h3 class="text-2xl font-bold text-white font-tech">PROTOTYPE 2</h3>
@@ -561,30 +589,40 @@
                     </div>
                 </div>
 
-                <!-- Prototype 3 (Under Development) -->
+                <!-- Prototype 3 -->
                 <div class="relative group">
-                    <!-- เน้นด้วยขอบสีเหลืองและ Glow แบบ Coming Soon -->
                     <div
-                        class="glass-panel p-2 rounded-2xl border-2 border-echo-warning/30 shadow-[0_0_30px_rgba(245,158,11,0.15)] hover:border-echo-warning hover:shadow-[0_0_50px_rgba(245,158,11,0.3)] transition-all duration-500 hover:-translate-y-2 transform scale-105 md:scale-100 md:hover:scale-105">
-                        <div
-                            class="relative h-64 overflow-hidden rounded-xl mb-4 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
-                            <!-- Placeholder สำหรับ Prototype 3 ที่กำลังพัฒนา -->
-                            <div class="text-center">
-                                <i data-lucide="wrench"
-                                    class="w-16 h-16 text-echo-warning mx-auto mb-4 animate-pulse"></i>
-                                <p class="text-gray-400 text-sm font-light">อยู่ระหว่างการพัฒนา...</p>
-                            </div>
+                        class="glass-panel p-2 rounded-2xl border border-white/10 hover:border-echo-accent/50 transition-all duration-500 hover:-translate-y-2">
+                        <div class="relative h-64 overflow-hidden rounded-xl mb-4 bg-gradient-to-br from-gray-900 to-black flex items-center justify-center p-4 cursor-pointer"
+                            onclick="openPrototype3Gallery()">
+                            <!-- รูป Prototype 3 -->
+                            <img src="PROTOTYPE_3.jpg" alt="Prototype 3 - Final Design"
+                                class="max-w-full max-h-full object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
                             <div
-                                class="absolute top-4 left-4 w-10 h-10 bg-echo-warning text-white flex items-center justify-center rounded-full font-tech font-bold shadow-lg shadow-yellow-500/50">
+                                class="absolute top-4 left-4 w-10 h-10 bg-echo-accent text-white flex items-center justify-center rounded-full font-tech font-bold border border-white/20 shadow-lg shadow-blue-500/30">
                                 03</div>
+                            <!-- Gallery indicator badge -->
                             <div
-                                class="absolute top-4 right-4 px-2 py-1 bg-echo-warning text-white text-[10px] uppercase font-bold rounded tracking-wider shadow-lg animate-pulse">
-                                Coming Soon</div>
+                                class="absolute top-4 right-4 flex items-center gap-1 px-2 py-1 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 text-white text-xs">
+                                <i data-lucide="images" class="w-3 h-3"></i>
+                                <span>2</span>
+                            </div>
+                            <!-- Hover overlay -->
+                            <div
+                                class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+                                <div
+                                    class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white flex flex-col items-center">
+                                    <i data-lucide="expand" class="w-8 h-8 mb-2"></i>
+                                    <span class="text-sm font-light">คลิกเพื่อดูรูปเพิ่มเติม</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="px-4 pb-4">
                             <h3 class="text-2xl font-bold text-white font-tech">PROTOTYPE 3</h3>
-                            <p class="text-sm text-echo-warning mt-2 font-light">🚧 กำลังอยู่ในช่วงพัฒนา -
-                                คาดว่าจะแล้วเสร็จเร็วๆ นี้</p>
+                            <p class="text-sm text-gray-500 mt-2 font-light">
+                                เราได้ออกแบบใหม่เเบบยกเครื่อง โดยซ่อน Flex Sensor
+                                เเละสายไฟไว้ภายในถุงมือทำให้ดูสะอาดตา
+                                เเละได้ทำเป็นช่องเก็บตัวอุปกรณ์ฮาร์ดแวร์ต่างๆทำให้ดูดียิ่งขึ้น</p>
                         </div>
                     </div>
                 </div>
@@ -1103,7 +1141,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                 <div>
                     <h3 class="text-3xl font-bold text-white font-tech tracking-wider mb-2">ECHO GLOVE</h3>
-                    <p class="text-gray-500 text-sm mb-6">Open House 2026 Project Showcase</p>
+                    <p class="text-gray-500 text-sm mb-6">FROM THE FINGERTIPS TO THE SOUND WORLD HEARS
+                    </p>
                 </div>
                 <div class="text-right">
                     <p class="text-gray-400 text-sm font-light">จัดทำโดย</p>
@@ -1160,6 +1199,167 @@
             </p>
         </div>
     </div>
+
+    <!-- Enhanced Gallery Lightbox Modal -->
+    <div id="galleryLightbox"
+        class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-md opacity-0 transition-opacity duration-500"
+        onclick="handleGalleryBackdropClick(event)">
+
+        <!-- Gallery Container -->
+        <div id="galleryContent"
+            class="relative w-full h-full flex items-center justify-center transform scale-95 transition-all duration-500">
+
+            <!-- Main Image Container -->
+            <div class="relative w-[85vw] md:w-[70vw] max-h-[80vh] overflow-hidden">
+                <!-- Image Slider -->
+                <div id="gallerySlider" class="relative flex transition-transform duration-500 ease-out"
+                    style="transform: translateX(0%);">
+                    <!-- Images will be injected here -->
+                </div>
+
+                <!-- Loading Spinner -->
+                <div id="galleryLoader" class="absolute inset-0 flex items-center justify-center bg-black/50 hidden">
+                    <div class="w-12 h-12 border-4 border-white/20 border-t-echo-accent rounded-full animate-spin">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Close Button -->
+            <button onclick="closeGallery()"
+                class="absolute top-6 right-6 w-12 h-12 bg-white/10 hover:bg-white/20 hover:scale-110 text-white rounded-full flex items-center justify-center transition-all duration-300 backdrop-blur-sm border border-white/20 z-20">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+
+            <!-- Navigation Arrows -->
+            <button id="galleryPrev" onclick="event.stopPropagation(); prevGalleryImage()"
+                class="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/10 hover:bg-white/20 hover:scale-110 text-white rounded-full flex items-center justify-center transition-all duration-300 backdrop-blur-sm border border-white/20 z-20 group">
+                <i data-lucide="chevron-left" class="w-7 h-7 group-hover:-translate-x-0.5 transition-transform"></i>
+            </button>
+            <button id="galleryNext" onclick="event.stopPropagation(); nextGalleryImage()"
+                class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/10 hover:bg-white/20 hover:scale-110 text-white rounded-full flex items-center justify-center transition-all duration-300 backdrop-blur-sm border border-white/20 z-20 group">
+                <i data-lucide="chevron-right" class="w-7 h-7 group-hover:translate-x-0.5 transition-transform"></i>
+            </button>
+
+            <!-- Bottom Controls -->
+            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-20">
+                <!-- Image Counter -->
+                <div id="galleryCounter"
+                    class="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 text-white text-sm font-tech">
+                    <span id="galleryCurrentIndex">1</span> / <span id="galleryTotalCount">5</span>
+                </div>
+
+                <!-- Dot Indicators -->
+                <div id="galleryDots" class="flex gap-2">
+                    <!-- Dots will be injected here -->
+                </div>
+            </div>
+
+            <!-- Thumbnail Strip -->
+            <div
+                class="absolute bottom-32 left-1/2 -translate-x-1/2 hidden md:flex gap-2 z-20 p-2 bg-black/50 backdrop-blur-sm rounded-xl border border-white/10">
+                <div id="galleryThumbnails" class="flex gap-2">
+                    <!-- Thumbnails will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Lightbox Styles -->
+    <style>
+        /* Gallery Slide Animations */
+        @keyframes slideInFromRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-in-right {
+            animation: slideInFromRight 0.4s ease-out;
+        }
+
+        .slide-in-left {
+            animation: slideInFromLeft 0.4s ease-out;
+        }
+
+        /* Thumbnail styles */
+        .gallery-thumbnail {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            opacity: 0.5;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .gallery-thumbnail:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        .gallery-thumbnail.active {
+            opacity: 1;
+            border-color: #3b82f6;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+
+        /* Dot indicator styles */
+        .gallery-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-dot:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(1.2);
+        }
+
+        .gallery-dot.active {
+            background: #3b82f6;
+            transform: scale(1.3);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+        /* Image zoom effect on load */
+        .gallery-image {
+            animation: zoomIn 0.4s ease-out;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
 
     <!-- Initialize Icons & Scroll Animations -->
     <script>
@@ -1293,6 +1493,251 @@
                 hero.style.setProperty('--mouse-y', `${y}px`);
             }
         });
+
+        // ========================================
+        // Enhanced Gallery Lightbox System
+        // ========================================
+
+        let galleryImages = [];
+        let galleryCurrentIndex = 0;
+        let galleryTouchStartX = 0;
+        let galleryTouchEndX = 0;
+
+        // Prototype 1 Gallery Data
+        const prototype1Gallery = {
+            images: [
+                { src: 'PROTOTYPE_1_1.jpg', caption: 'ด้านหน้าถุงมือ - เห็น Flex Sensor และวงจรทดลอง' },
+                { src: 'PROTOTYPE_1_2.jpg', caption: 'มุมมองการสวมใส่จริง - ทดสอบการทำงาน' },
+                { src: 'PROTOTYPE_1_3.jpg', caption: 'ด้านฝ่ามือ - พื้นผิวการจับยึดที่ดี' },
+                { src: 'PROTOTYPE_1_4.jpg', caption: 'มุมมองด้านข้าง - แสดงความกระชับ' },
+                { src: 'PROTOTYPE_1_5.jpg', caption: 'มุมมองเต็มมือ - ด้านในถุงมือ' }
+            ],
+            title: 'PROTOTYPE 1 Gallery'
+        };
+
+        // Prototype 2 Gallery Data (Updated)
+        const prototype2Gallery = {
+            images: [
+                { src: 'PROTOTYPE_2_NEW.jpg', caption: 'โมเดลแรกที่สวมใส่ได้จริง' },
+                { src: 'PROTOTYPE_2_2.jpg', caption: 'การทดสอบการขยับนิ้วและการส่งค่า' },
+                { src: 'PROTOTYPE_2_3.jpg', caption: 'มุมมองด้านบน - การจัดวางบอร์ดและแบตเตอรี่' }
+            ],
+            title: 'PROTOTYPE 2 Gallery'
+        };
+
+        // Prototype 3 Gallery Data
+        const prototype3Gallery = {
+            images: [
+                { src: 'PROTOTYPE_3.jpg', caption: 'การออกแบบใหม่ที่ซ่อนสายไฟทั้งหมด' },
+                { src: 'PROTOTYPE_3_2.jpg', caption: 'มุมมองด้านข้าง - ช่องเก็บวงจรที่ออกแบบมาอย่างดี' }
+            ],
+            title: 'PROTOTYPE 3 Gallery'
+        };
+
+        function openPrototype1Gallery() {
+            openGallery(prototype1Gallery.images, 0, prototype1Gallery.title);
+        }
+
+        function openPrototype2Gallery() {
+            openGallery(prototype2Gallery.images, 0, prototype2Gallery.title);
+        }
+
+        function openPrototype3Gallery() {
+            openGallery(prototype3Gallery.images, 0, prototype3Gallery.title);
+        }
+
+        function openGallery(images, startIndex = 0, title = 'Gallery') {
+            galleryImages = images;
+            galleryCurrentIndex = startIndex;
+
+            const gallery = document.getElementById('galleryLightbox');
+            const content = document.getElementById('galleryContent');
+            const slider = document.getElementById('gallerySlider');
+            const dotsContainer = document.getElementById('galleryDots');
+            const thumbnailsContainer = document.getElementById('galleryThumbnails');
+
+            // Build the image slides
+            slider.innerHTML = '';
+            images.forEach((img, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'gallery-slide flex-shrink-0 w-full flex items-center justify-center';
+                slide.innerHTML = `
+                    <img src="${img.src}" alt="${img.caption || ''}" 
+                         class="gallery-image max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl cursor-default ${img.className || ''}"
+                         onclick="event.stopPropagation()">
+                `;
+                slider.appendChild(slide);
+            });
+
+            // Build dot indicators
+            dotsContainer.innerHTML = '';
+            images.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = `gallery-dot ${index === startIndex ? 'active' : ''}`;
+                dot.onclick = (e) => { e.stopPropagation(); goToGalleryImage(index); };
+                dotsContainer.appendChild(dot);
+            });
+
+            // Build thumbnails
+            thumbnailsContainer.innerHTML = '';
+            images.forEach((img, index) => {
+                const thumb = document.createElement('img');
+                thumb.src = img.src;
+                thumb.alt = img.caption || '';
+                thumb.className = `gallery-thumbnail ${index === startIndex ? 'active' : ''}`;
+                thumb.onclick = (e) => { e.stopPropagation(); goToGalleryImage(index); };
+                thumbnailsContainer.appendChild(thumb);
+            });
+
+            // Update counter and caption
+            updateGalleryUI();
+
+            // Show gallery
+            gallery.classList.remove('hidden');
+            setTimeout(() => {
+                gallery.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+                lucide.createIcons();
+            }, 10);
+
+            // Add keyboard listener
+            document.addEventListener('keydown', handleGalleryKeyboard);
+
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeGallery() {
+            const gallery = document.getElementById('galleryLightbox');
+            const content = document.getElementById('galleryContent');
+
+            gallery.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+
+            setTimeout(() => {
+                gallery.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 500);
+
+            // Remove keyboard listener
+            document.removeEventListener('keydown', handleGalleryKeyboard);
+        }
+
+        function handleGalleryBackdropClick(event) {
+            // Only close if clicking on the backdrop itself
+            if (event.target.id === 'galleryLightbox' || event.target.id === 'galleryContent') {
+                closeGallery();
+            }
+        }
+
+        function updateGalleryUI() {
+            const slider = document.getElementById('gallerySlider');
+            const counterCurrent = document.getElementById('galleryCurrentIndex');
+            const counterTotal = document.getElementById('galleryTotalCount');
+            const dots = document.querySelectorAll('.gallery-dot');
+            const thumbnails = document.querySelectorAll('.gallery-thumbnail');
+
+            // Update slider position
+            slider.style.transform = `translateX(-${galleryCurrentIndex * 100}%)`;
+
+            // Update counter
+            counterCurrent.textContent = galleryCurrentIndex + 1;
+            counterTotal.textContent = galleryImages.length;
+
+            // Update dots
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === galleryCurrentIndex);
+            });
+
+            // Update thumbnails
+            thumbnails.forEach((thumb, index) => {
+                thumb.classList.toggle('active', index === galleryCurrentIndex);
+            });
+        }
+
+        function nextGalleryImage() {
+            if (galleryCurrentIndex < galleryImages.length - 1) {
+                galleryCurrentIndex++;
+            } else {
+                galleryCurrentIndex = 0; // Loop back to first
+            }
+            updateGalleryUI();
+            addSlideAnimation('right');
+        }
+
+        function prevGalleryImage() {
+            if (galleryCurrentIndex > 0) {
+                galleryCurrentIndex--;
+            } else {
+                galleryCurrentIndex = galleryImages.length - 1; // Loop to last
+            }
+            updateGalleryUI();
+            addSlideAnimation('left');
+        }
+
+        function goToGalleryImage(index) {
+            const direction = index > galleryCurrentIndex ? 'right' : 'left';
+            galleryCurrentIndex = index;
+            updateGalleryUI();
+            addSlideAnimation(direction);
+        }
+
+        function addSlideAnimation(direction) {
+            const currentSlide = document.querySelectorAll('.gallery-slide')[galleryCurrentIndex];
+            const img = currentSlide?.querySelector('img');
+            if (img) {
+                img.classList.remove('slide-in-left', 'slide-in-right');
+                void img.offsetWidth; // Force reflow
+                img.classList.add(direction === 'right' ? 'slide-in-right' : 'slide-in-left');
+            }
+        }
+
+        function handleGalleryKeyboard(event) {
+            switch (event.key) {
+                case 'ArrowRight':
+                case 'ArrowDown':
+                    nextGalleryImage();
+                    break;
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                    prevGalleryImage();
+                    break;
+                case 'Escape':
+                    closeGallery();
+                    break;
+            }
+        }
+
+        // Touch/Swipe support for mobile
+        document.addEventListener('DOMContentLoaded', function () {
+            const gallery = document.getElementById('galleryLightbox');
+
+            gallery.addEventListener('touchstart', (e) => {
+                galleryTouchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            gallery.addEventListener('touchend', (e) => {
+                galleryTouchEndX = e.changedTouches[0].screenX;
+                handleGallerySwipe();
+            }, { passive: true });
+        });
+
+        function handleGallerySwipe() {
+            const swipeThreshold = 50;
+            const diff = galleryTouchStartX - galleryTouchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe left -> Next
+                    nextGalleryImage();
+                } else {
+                    // Swipe right -> Previous
+                    prevGalleryImage();
+                }
+            }
+        }
     </script>
 </body>
 
