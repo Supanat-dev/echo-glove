@@ -2383,6 +2383,34 @@
     </script>
     <!-- Enhanced Animations -->
     <script src="animations.js"></script>
+
+    <!-- Supabase Visitor Tracking -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        (function() {
+            const SUPABASE_URL = 'https://kwtvrjbvnibyrshvhmcf.supabase.co';
+            const SUPABASE_KEY = 'sb_publishable_P0PDsahfYiqaEIEWhqBfEA_hRUw2WYL';
+            const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+            async function logVisit() {
+                try {
+                    await client.from('visitors').insert({
+                        page: window.location.pathname || '/',
+                        referrer: document.referrer || null,
+                        user_agent: navigator.userAgent,
+                        language: navigator.language,
+                        screen_width: screen.width,
+                        screen_height: screen.height,
+                        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                    });
+                } catch (e) {
+                    // Silent fail - don't affect user experience
+                }
+            }
+
+            logVisit();
+        })();
+    </script>
 </body>
 
 

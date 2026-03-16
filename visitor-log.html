@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Log | ECHO GLOVE</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;600&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Kanit', sans-serif;
+            background: #0a0a0a;
+            color: #e5e5e5;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 20px 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.1em;
+        }
+
+        .logo span { color: #6b7280; }
+
+        .badge {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: #e5e5e5;
+            font-family: 'Kanit', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .btn-primary {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #60a5fa;
+        }
+
+        .btn-primary:hover {
+            background: rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            max-width: 1400px;
+            margin: 24px auto;
+            padding: 0 32px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 20px 24px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-value {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .stat-value.accent { color: #60a5fa; }
+        .stat-value.green { color: #34d399; }
+        .stat-value.amber { color: #fbbf24; }
+
+        /* Table Container */
+        .table-container {
+            max-width: 1400px;
+            margin: 0 auto 40px;
+            padding: 0 32px;
+        }
+
+        .table-wrapper {
+            background: rgba(15, 15, 15, 0.8);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .visitor-count {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            text-align: left;
+            padding: 12px 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            background: rgba(10, 10, 10, 0.5);
+        }
+
+        tbody tr {
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(59, 130, 246, 0.04);
+        }
+
+        tbody td {
+            padding: 14px 20px;
+            font-size: 0.85rem;
+            color: #d1d5db;
+        }
+
+        .device-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+        }
+
+        .device-mobile {
+            background: rgba(167, 139, 250, 0.12);
+            color: #a78bfa;
+        }
+
+        .device-desktop {
+            background: rgba(52, 211, 153, 0.12);
+            color: #34d399;
+        }
+
+        .device-tablet {
+            background: rgba(251, 191, 36, 0.12);
+            color: #fbbf24;
+        }
+
+        .time-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .time-date { color: #e5e5e5; font-weight: 400; }
+        .time-hour { color: #6b7280; font-size: 0.78rem; }
+
+        .page-badge {
+            background: rgba(255,255,255,0.05);
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-family: 'Rajdhani', monospace;
+            color: #9ca3af;
+        }
+
+        /* Loading & Empty State */
+        .loading, .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(59, 130, 246, 0.2);
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        /* Auto-refresh indicator */
+        .refresh-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .pulse-dot {
+            width: 6px;
+            height: 6px;
+            background: #34d399;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        /* Modal for delete confirmation */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .modal-box {
+            background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .modal-box h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #f87171;
+        }
+
+        .modal-box p {
+            font-size: 0.85rem;
+            color: #9ca3af;
+            margin-bottom: 24px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header { padding: 16px; }
+            .stats-grid, .table-container { padding: 0 16px; }
+            .table-wrapper { overflow-x: auto; }
+            table { min-width: 600px; }
+            .header-content { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <a href="index.html" style="text-decoration:none;">
+                    <div class="logo">ECHO<span>GLOVE</span></div>
+                </a>
+                <span class="badge">📊 Visitor Log</span>
+            </div>
+            <div class="header-actions">
+                <div class="refresh-indicator">
+                    <div class="pulse-dot"></div>
+                    <span>อัปเดตอัตโนมัติ</span>
+                </div>
+                <button class="btn btn-primary" onclick="loadVisitors()">🔄 รีเฟรช</button>
+                <button class="btn btn-danger" onclick="showDeleteModal()">🗑️ ล้างข้อมูล</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">📈 ผู้เข้าชมทั้งหมด</div>
+            <div class="stat-value accent" id="totalVisitors">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">📅 วันนี้</div>
+            <div class="stat-value green" id="todayVisitors">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">📱 มือถือ</div>
+            <div class="stat-value amber" id="mobileVisitors">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">💻 คอมพิวเตอร์</div>
+            <div class="stat-value" id="desktopVisitors">—</div>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+        <div class="table-wrapper">
+            <div class="table-header">
+                <span class="table-title">รายการผู้เข้าชมล่าสุด</span>
+                <span class="visitor-count" id="showingCount"></span>
+            </div>
+            <div id="tableContent">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <div>กำลังโหลดข้อมูล...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-box">
+            <h3>⚠️ ยืนยันการล้างข้อมูล</h3>
+            <p>ข้อมูลผู้เข้าชมทั้งหมดจะถูกลบ<br>การกระทำนี้ไม่สามารถย้อนกลับได้</p>
+            <div class="modal-actions">
+                <button class="btn" onclick="hideDeleteModal()">ยกเลิก</button>
+                <button class="btn btn-danger" onclick="deleteAllVisitors()">ลบทั้งหมด</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://kwtvrjbvnibyrshvhmcf.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_P0PDsahfYiqaEIEWhqBfEA_hRUw2WYL';
+        const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Parse User Agent to readable format
+        function parseDevice(ua) {
+            if (!ua) return { type: 'unknown', icon: '❓', label: 'ไม่ทราบ', browser: '' };
+
+            const isMobile = /Mobile|Android|iPhone|iPad|iPod/i.test(ua);
+            const isTablet = /iPad|Tablet/i.test(ua);
+
+            let browser = 'Unknown';
+            if (ua.includes('Edg/')) browser = 'Edge';
+            else if (ua.includes('Chrome/')) browser = 'Chrome';
+            else if (ua.includes('Firefox/')) browser = 'Firefox';
+            else if (ua.includes('Safari/') && !ua.includes('Chrome')) browser = 'Safari';
+            else if (ua.includes('Opera') || ua.includes('OPR/')) browser = 'Opera';
+
+            let os = '';
+            if (ua.includes('Windows')) os = 'Windows';
+            else if (ua.includes('Mac OS')) os = 'macOS';
+            else if (ua.includes('Android')) os = 'Android';
+            else if (ua.includes('iPhone') || ua.includes('iPad')) os = 'iOS';
+            else if (ua.includes('Linux')) os = 'Linux';
+
+            if (isTablet) return { type: 'tablet', icon: '📱', label: 'Tablet', browser, os, cssClass: 'device-tablet' };
+            if (isMobile) return { type: 'mobile', icon: '📱', label: 'Mobile', browser, os, cssClass: 'device-mobile' };
+            return { type: 'desktop', icon: '💻', label: 'Desktop', browser, os, cssClass: 'device-desktop' };
+        }
+
+        // Format date in Thai-friendly format
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+                            'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+            const day = d.getDate();
+            const month = months[d.getMonth()];
+            const year = d.getFullYear() + 543; // พ.ศ.
+            const time = d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            return { date: `${day} ${month} ${year}`, time };
+        }
+
+        // Check if date is today
+        function isToday(dateStr) {
+            const d = new Date(dateStr);
+            const today = new Date();
+            return d.toDateString() === today.toDateString();
+        }
+
+        // Load visitors
+        async function loadVisitors() {
+            try {
+                const { data, error } = await client
+                    .from('visitors')
+                    .select('*')
+                    .order('visited_at', { ascending: false })
+                    .limit(200);
+
+                if (error) throw error;
+
+                // Update stats
+                const total = data.length;
+                const todayCount = data.filter(v => isToday(v.visited_at)).length;
+                const mobileCount = data.filter(v => parseDevice(v.user_agent).type === 'mobile').length;
+                const desktopCount = data.filter(v => parseDevice(v.user_agent).type === 'desktop').length;
+
+                document.getElementById('totalVisitors').textContent = total;
+                document.getElementById('todayVisitors').textContent = todayCount;
+                document.getElementById('mobileVisitors').textContent = mobileCount;
+                document.getElementById('desktopVisitors').textContent = desktopCount;
+                document.getElementById('showingCount').textContent = `แสดง ${total} รายการล่าสุด`;
+
+                if (total === 0) {
+                    document.getElementById('tableContent').innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">📭</div>
+                            <div>ยังไม่มีผู้เข้าชม</div>
+                            <div style="font-size:0.78rem; margin-top:8px;">เมื่อมีคนเข้าชมเว็บไซต์ ข้อมูลจะแสดงที่นี่</div>
+                        </div>`;
+                    return;
+                }
+
+                // Build table
+                let html = `<table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>เวลาเข้าชม</th>
+                            <th>อุปกรณ์</th>
+                            <th>เบราว์เซอร์ / OS</th>
+                            <th>หน้าที่ดู</th>
+                            <th>ภาษา</th>
+                            <th>Timezone</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+                data.forEach((v, i) => {
+                    const device = parseDevice(v.user_agent);
+                    const dt = formatDate(v.visited_at);
+                    const todayBadge = isToday(v.visited_at) ? ' ⬤' : '';
+
+                    html += `<tr>
+                        <td style="color:#4b5563;">${i + 1}</td>
+                        <td>
+                            <div class="time-cell">
+                                <span class="time-date">${dt.date}${todayBadge ? '<span style="color:#34d399;font-size:0.5rem;margin-left:6px;">●  วันนี้</span>' : ''}</span>
+                                <span class="time-hour">${dt.time} น.</span>
+                            </div>
+                        </td>
+                        <td><span class="device-badge ${device.cssClass}">${device.icon} ${device.label}</span></td>
+                        <td>${device.browser}${device.os ? ' / ' + device.os : ''}</td>
+                        <td><span class="page-badge">${v.page || '/'}</span></td>
+                        <td>${v.language || '—'}</td>
+                        <td style="font-size:0.78rem;color:#6b7280;">${v.timezone || '—'}</td>
+                    </tr>`;
+                });
+
+                html += '</tbody></table>';
+                document.getElementById('tableContent').innerHTML = html;
+
+            } catch (err) {
+                document.getElementById('tableContent').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⚠️</div>
+                        <div>ไม่สามารถโหลดข้อมูลได้</div>
+                        <div style="font-size:0.78rem; margin-top:8px; color:#ef4444;">${err.message || 'กรุณาตรวจสอบการตั้งค่า Supabase'}</div>
+                    </div>`;
+            }
+        }
+
+        // Delete all visitors
+        async function deleteAllVisitors() {
+            try {
+                await client.from('visitors').delete().neq('id', 0);
+                hideDeleteModal();
+                loadVisitors();
+            } catch (err) {
+                alert('เกิดข้อผิดพลาด: ' + err.message);
+            }
+        }
+
+        function showDeleteModal() {
+            document.getElementById('deleteModal').classList.add('active');
+        }
+        function hideDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+        }
+
+        // Initial load
+        loadVisitors();
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadVisitors, 30000);
+    </script>
+</body>
+</html>
