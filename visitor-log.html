@@ -604,14 +604,14 @@
                         let detailParts = [];
                         
                         if (v.region) {
-                            detailParts.push(`${regionThai} <span class="accuracy-badge accuracy-medium">ระดับจังหวัด</span>`);
+                            detailParts.push(`${regionThai} <span class="accuracy-badge accuracy-medium">อิงจากจุดตั้งศูนย์เครือข่ายประจำจังหวัด (ISP)</span>`);
                         }
                         if (v.city && v.city !== v.region) {
-                            detailParts.push(`${cityThai} <span class="accuracy-badge accuracy-low">ระดับอำเภอ/เขต</span>`);
+                            detailParts.push(`${cityThai} <span class="accuracy-badge accuracy-low">ประมาณพิกัดจากการเชื่อมต่อเสาสัญญาณหรือโหนดเครือข่าย</span>`);
                         }
                         
                         locationHtml = `<div class="location-cell">
-                            <span class="location-main">${mainLoc} <span class="accuracy-badge accuracy-high">ระดับประเทศ</span></span>
+                            <span class="location-main">${mainLoc} <span class="accuracy-badge accuracy-high">อ้างอิงการจดทะเบียน IP ระดับประเทศ</span></span>
                             ${detailParts.length ? '<span class="location-detail">' + detailParts.join(' › ') + '</span>' : ''}
                         </div>`;
                     }
