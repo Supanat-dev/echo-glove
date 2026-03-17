@@ -2394,37 +2394,38 @@
 
             async function logVisit() {
                 try {
-                    // Robust IP geolocation with fallbacks
+                    // Robust IP geolocation with proper fallbacks
                     let geo = {};
                     
-                    // Try 1: ipapi.co
-                    try {
-                        const res1 = await fetch('https://ipapi.co/json/');
-                        if (res1.ok) {
-                            const data1 = await res1.json();
-                            geo = { ip: data1.ip, country: data1.country_name, region: data1.region, city: data1.city, isp: data1.org };
-                        }
-                    } catch (e1) {
-                        // Try 2: ipwho.is (fallback)
+                    const fetchGeo = async () => {
+                        // Attempt 1: ipwho.is (Often more reliable for mobile)
                         try {
-                            const res2 = await fetch('https://ipwho.is/');
-                            if (res2.ok) {
-                                const data2 = await res2.json();
-                                if (data2.success) {
-                                    geo = { ip: data2.ip, country: data2.country, region: data2.region, city: data2.city, isp: data2.connection?.isp };
-                                }
-                            }
-                        } catch (e2) {
-                            // Try 3: ipinfo.io (fallback 2)
-                            try {
-                                const res3 = await fetch('https://ipinfo.io/json');
-                                if (res3.ok) {
-                                    const data3 = await res3.json();
-                                    geo = { ip: data3.ip, country: data3.country, region: data3.region, city: data3.city, isp: data3.org };
-                                }
-                            } catch (e3) { /* All geolocations failed */ }
-                        }
-                    }
+                            const res = await fetch('https://ipwho.is/');
+                            if (!res.ok) throw new Error();
+                            const data = await res.json();
+                            if (data.success) return { ip: data.ip, country: data.country, region: data.region, city: data.city, isp: data.connection?.isp };
+                        } catch (e) {}
+
+                        // Attempt 2: ipapi.co
+                        try {
+                            const res = await fetch('https://ipapi.co/json/');
+                            if (!res.ok) throw new Error();
+                            const data = await res.json();
+                            return { ip: data.ip, country: data.country_name, region: data.region, city: data.city, isp: data.org };
+                        } catch (e) {}
+
+                        // Attempt 3: ipinfo.io
+                        try {
+                            const res = await fetch('https://ipinfo.io/json');
+                            if (!res.ok) throw new Error();
+                            const data = await res.json();
+                            return { ip: data.ip, country: data.country, region: data.region, city: data.city, isp: data.org };
+                        } catch (e) {}
+
+                        return {};
+                    };
+
+                    geo = await fetchGeo();
 
                     await client.from('visitors').insert({
                         page: window.location.pathname || '/',
