@@ -596,7 +596,7 @@
                     let locationHtml = '—';
                     if (v.country) {
                         const flag = getCountryFlag(v.country);
-                        const countryName = v.country === 'Thailand' ? 'ไทย' : v.country;
+                        const countryName = translateCountry(v.country);
                         const regionThai = translateToThai(v.region);
                         const cityThai = translateToThai(v.city);
                         
@@ -604,14 +604,14 @@
                         let detailParts = [];
                         
                         if (v.region) {
-                            detailParts.push(`${regionThai} <span class="accuracy-badge accuracy-medium">สถานีฐาน/จังหวัด</span>`);
+                            detailParts.push(`${regionThai} <span class="accuracy-badge accuracy-medium">ตรวจพบจากชุมสายหลัก</span>`);
                         }
                         if (v.city && v.city !== v.region) {
-                            detailParts.push(`${cityThai} <span class="accuracy-badge accuracy-low">เครือข่าย/เขต</span>`);
+                            detailParts.push(`${cityThai} <span class="accuracy-badge accuracy-low">สแกนจากจุดกระจายสัญญาณ</span>`);
                         }
                         
                         locationHtml = `<div class="location-cell">
-                            <span class="location-main">${mainLoc} <span class="accuracy-badge accuracy-high">ทะเบียน IP ชัดเจน</span></span>
+                            <span class="location-main">${mainLoc} <span class="accuracy-badge accuracy-high">อ้างอิงจากทะเบียน IP</span></span>
                             ${detailParts.length ? '<span class="location-detail">' + detailParts.join(' › ') + '</span>' : ''}
                         </div>`;
                     }
@@ -655,15 +655,38 @@
                 'Philippines': '🇵🇭', 'India': '🇮🇳', 'Australia': '🇦🇺',
                 'Canada': '🇨🇦', 'Brazil': '🇧🇷', 'Russia': '🇷🇺',
                 'Myanmar': '🇲🇲', 'Laos': '🇱🇦', 'Cambodia': '🇰🇭',
-                'Taiwan': '🇹🇼', 'Hong Kong': '🇰🇷', 'Netherlands': '🇳🇱',
+                'Taiwan': '🇹🇼', 'Hong Kong': '🇭🇰', 'Netherlands': '🇳🇱',
                 'Italy': '🇮🇹', 'Spain': '🇪🇸', 'Sweden': '🇸🇪',
             };
             return flags[country] || '🌐';
         }
 
+        // Translate country name to Thai
+        function translateCountry(country) {
+            const mapping = {
+                'Thailand': 'ไทย',
+                'United States': 'สหรัฐอเมริกา',
+                'Japan': 'ญี่ปุ่น',
+                'South Korea': 'เกาหลีใต้',
+                'China': 'จีน',
+                'United Kingdom': 'สหราชอาณาจักร',
+                'Singapore': 'สิงคโปร์',
+                'Myanmar': 'พม่า',
+                'Laos': 'ลาว',
+                'Vietnam': 'เวียดนาม',
+                'Cambodia': 'กัมพูชา',
+                'Malaysia': 'มาเลเซีย'
+            };
+            return mapping[country] || country;
+        }
+
         // Simple Thai Translation mapping for common locations
         function translateToThai(text) {
             if (!text) return '';
+            
+            // Clean common English suffixes
+            const cleaned = text.replace(/ province| city| changwat/gi, '').trim();
+
             const mapping = {
                 'Bangkok': 'กรุงเทพมหานคร',
                 'Nonthaburi': 'นนทบุรี',
@@ -710,7 +733,6 @@
                 'Nan': 'น่าน',
                 'Phayao': 'พะเยา',
                 'Kalasin': 'กาฬสินธุ์',
-                'Chaiyaphum': 'ชัยภูมิ',
                 'Yasothon': 'ยโสธร',
                 'Mukdahan': 'มุกดาหาร',
                 'Roi Et': 'ร้อยเอ็ด',
@@ -745,7 +767,7 @@
                 'Yala': 'ยะลา',
                 'Narathiwat': 'นราธิวาส'
             };
-            return mapping[text] || text;
+            return mapping[cleaned] || cleaned;
         }
 
         // Delete all visitors
