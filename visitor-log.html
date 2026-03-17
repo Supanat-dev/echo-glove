@@ -604,14 +604,14 @@
                         let detailParts = [];
                         
                         if (v.region) {
-                            detailParts.push(`${regionThai} <span class="accuracy-badge accuracy-medium">ตรวจพบจากชุมสายหลัก</span>`);
+                            detailParts.push(`${regionThai} <span class="accuracy-badge accuracy-medium">ระดับจังหวัด</span>`);
                         }
                         if (v.city && v.city !== v.region) {
-                            detailParts.push(`${cityThai} <span class="accuracy-badge accuracy-low">สแกนจากจุดกระจายสัญญาณ</span>`);
+                            detailParts.push(`${cityThai} <span class="accuracy-badge accuracy-low">ระดับอำเภอ/เขต</span>`);
                         }
                         
                         locationHtml = `<div class="location-cell">
-                            <span class="location-main">${mainLoc} <span class="accuracy-badge accuracy-high">อ้างอิงจากทะเบียน IP</span></span>
+                            <span class="location-main">${mainLoc} <span class="accuracy-badge accuracy-high">ระดับประเทศ</span></span>
                             ${detailParts.length ? '<span class="location-detail">' + detailParts.join(' › ') + '</span>' : ''}
                         </div>`;
                     }
@@ -765,8 +765,38 @@
                 'Satun': 'สตูล',
                 'Pattani': 'ปัตตานี',
                 'Yala': 'ยะลา',
-                'Narathiwat': 'นราธิวาส'
+                'Narathiwat': 'นราธิวาส',
+                // Common Districts
+                'Bang Rak': 'บางรัก',
+                'Pathum Wan': 'ปทุมวัน',
+                'Phaya Thai': 'พญาไท',
+                'Ratchathewi': 'ราชเทวี',
+                'Chatuchak': 'จตุจักร',
+                'Bang Kapi': 'บางกะปิ',
+                'Lat Krabang': 'ลาดกระบัง',
+                'Khlong Toei': 'คลองเตย',
+                'Vadhana': 'วัฒนา',
+                'Bang Na': 'บางนา',
+                'Sathon': 'สาทร',
+                'Phra Pradaeng': 'พระประแดง',
+                'Bang Kruai': 'บางกรวย',
+                'Bang Yai': 'บางใหญ่'
             };
+            
+            const lower = cleaned.toLowerCase();
+            if (lower.startsWith('mueang ')) {
+                const base = cleaned.substring(7).trim();
+                return 'อำเภอเมือง' + (mapping[base] || base);
+            }
+            if (lower.startsWith('amphoe ')) {
+                const base = cleaned.substring(7).trim();
+                return 'อำเภอ' + (mapping[base] || base);
+            }
+            if (lower.startsWith('khet ')) {
+                const base = cleaned.substring(5).trim();
+                return 'เขต' + (mapping[base] || base);
+            }
+
             return mapping[cleaned] || cleaned;
         }
 
