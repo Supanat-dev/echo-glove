@@ -306,6 +306,34 @@
             color: #e5e5e5;
         }
 
+        .stay-time {
+            font-family: monospace;
+            font-size: 0.82rem;
+            color: #34d399;
+            background: rgba(52, 211, 153, 0.08);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .visitor-type {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .type-new {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+        }
+
+        .type-returning {
+            background: rgba(168, 85, 247, 0.1);
+            color: #c084fc;
+        }
+
         .isp-text {
             font-size: 0.72rem;
             color: #4b5563;
@@ -546,6 +574,29 @@
             return d.toDateString() === today.toDateString();
         }
 
+        // Calculate stay time in human readable format
+        function getStayTime(start, end) {
+            const startTime = new Date(start);
+            const endTime = new Date(end);
+            const diffMs = endTime - startTime;
+            
+            if (diffMs < 5000) return '< 5 วินาที';
+            
+            const diffSec = Math.floor(diffMs / 1000);
+            if (diffSec < 60) return `${diffSec} วินาที`;
+            
+            const diffMin = Math.floor(diffSec / 60);
+            const remainingSec = diffSec % 60;
+            
+            if (diffMin < 60) {
+                return `${diffMin} นาที ${remainingSec} วิ`;
+            }
+            
+            const diffHour = Math.floor(diffMin / 60);
+            const remainingMin = diffMin % 60;
+            return `${diffHour} ชม. ${remainingMin} นาที`;
+        }
+
         // Load visitors
         async function loadVisitors() {
             try {
@@ -589,6 +640,7 @@
                         <tr>
                             <th>#</th>
                             <th>เวลาเข้าชม</th>
+                            <th>สถานะ / Stay Time</th>
                             <th>สถานที่</th>
                             <th>อุปกรณ์</th>
                             <th>เบราว์เซอร์ / OS</th>
@@ -626,12 +678,24 @@
                         </div>`;
                     }
 
+                    // Identify returning visitor (within the loaded batch)
+                    const isReturning = data.some((other, idx) => other.visitor_id === v.visitor_id && idx > i);
+                    const stayTime = getStayTime(v.visited_at, v.last_active_at || v.visited_at);
+
                     html += `<tr>
                         <td style="color:#4b5563;">${i + 1}</td>
                         <td>
                             <div class="time-cell">
                                 <span class="time-date">${dt.date}${isToday(v.visited_at) ? '<span style="color:#34d399;font-size:0.5rem;margin-left:6px;">●  วันนี้</span>' : ''}</span>
                                 <span class="time-hour">${dt.time} น.</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-start;">
+                                <span class="visitor-type ${isReturning ? 'type-returning' : 'type-new'}">
+                                    ${isReturning ? '🔄 Returning' : '✨ New Visitor'}
+                                </span>
+                                <span class="stay-time">⏱️ ${stayTime}</span>
                             </div>
                         </td>
                         <td>${locationHtml}</td>

@@ -2394,40 +2394,39 @@
 
             async function logVisit() {
                 try {
-                    // Robust IP geolocation with proper fallbacks
+                    // 1. Manage Persistent Visitor ID
+                    let visitorId = localStorage.getItem('echo_glove_visitor_id');
+                    if (!visitorId) {
+                        visitorId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : 
+                                    'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                                        const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                                        return v.toString(16);
+                                    });
+                        localStorage.setItem('echo_glove_visitor_id', visitorId);
+                    }
+
+                    // 2. Fetch IP Geolocation
                     let geo = {};
-                    
                     const fetchGeo = async () => {
-                        // Attempt 1: ipwho.is (Often more reliable for mobile)
                         try {
                             const res = await fetch('https://ipwho.is/');
                             if (!res.ok) throw new Error();
                             const data = await res.json();
                             if (data.success) return { ip: data.ip, country: data.country, region: data.region, city: data.city, isp: data.connection?.isp };
                         } catch (e) {}
-
-                        // Attempt 2: ipapi.co
                         try {
                             const res = await fetch('https://ipapi.co/json/');
                             if (!res.ok) throw new Error();
                             const data = await res.json();
                             return { ip: data.ip, country: data.country_name, region: data.region, city: data.city, isp: data.org };
                         } catch (e) {}
-
-                        // Attempt 3: ipinfo.io
-                        try {
-                            const res = await fetch('https://ipinfo.io/json');
-                            if (!res.ok) throw new Error();
-                            const data = await res.json();
-                            return { ip: data.ip, country: data.country, region: data.region, city: data.city, isp: data.org };
-                        } catch (e) {}
-
                         return {};
                     };
 
                     geo = await fetchGeo();
 
-                    await client.from('visitors').insert({
+                    // 3. Insert Initial Log
+                    const { data, error } = await client.from('visitors').insert({
                         page: window.location.pathname || '/',
                         referrer: document.referrer || null,
                         user_agent: navigator.userAgent,
@@ -2439,11 +2438,19 @@
                         country: geo.country || null,
                         region: geo.region || null,
                         city: geo.city || null,
-                        isp: geo.isp || null
-                    });
-                } catch (e) {
-                    // Silent fail - don't affect user experience
-                }
+                        isp: geo.isp || null,
+                        visitor_id: visitorId
+                    }).select('id').single();
+
+                    // 4. Start Heartbeat (Every 20 seconds to update last_active_at)
+                    if (data && data.id) {
+                        setInterval(async () => {
+                            await client.from('visitors')
+                                .update({ last_active_at: new Date().toISOString() })
+                                .eq('id', data.id);
+                        }, 20000);
+                    }
+                } catch (e) {}
             }
 
             logVisit();
