@@ -287,25 +287,23 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            padding: 2px 8px;
-            border-radius: 6px;
             font-size: 0.68rem;
-            font-weight: 500;
+            color: #9ca3af;
         }
 
-        .accuracy-high {
-            background: rgba(52, 211, 153, 0.12);
-            color: #34d399;
+        .location-note {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 0 16px 20px 16px;
+            font-size: 0.8rem;
+            color: #a1a1aa;
+            line-height: 1.5;
         }
 
-        .accuracy-medium {
-            background: rgba(251, 191, 36, 0.12);
-            color: #fbbf24;
-        }
-
-        .accuracy-low {
-            background: rgba(239, 68, 68, 0.12);
-            color: #f87171;
+        .location-note strong {
+            color: #e5e5e5;
         }
 
         .isp-text {
@@ -460,6 +458,14 @@
 
     <!-- Table -->
     <div class="table-container">
+        
+        <div class="location-note">
+            <strong>หมายเหตุการระบุตำแหน่ง (Geolocation):</strong> ตำแหน่งที่แสดงเป็นการประมาณการเบื้องต้น<br>
+            • <strong>ประเทศ:</strong> อ้างอิงจากข้อมูลทะเบียน IP ระดับประเทศ<br>
+            • <strong>จังหวัด:</strong> อิงจากจุดตั้งศูนย์เครือข่ายอินเทอร์เน็ต (ISP) ประจำจังหวัด<br>
+            • <strong>อำเภอ/เขต:</strong> สแกนและประมาณพิกัดจากการเชื่อมต่อเสาสัญญาณหรือโหนดเครือข่ายบริเวณที่ใกล้ที่สุด
+        </div>
+
         <div class="table-wrapper">
             <div class="table-header">
                 <span class="table-title">รายการผู้เข้าชมล่าสุด</span>
@@ -604,14 +610,14 @@
                         let detailParts = [];
                         
                         if (v.region) {
-                            detailParts.push(`${regionThai} <span class="accuracy-badge accuracy-medium">อิงจากจุดตั้งศูนย์เครือข่ายประจำจังหวัด (ISP)</span>`);
+                            detailParts.push(`${regionThai} <span class="accuracy-badge">(จังหวัด)</span>`);
                         }
                         if (v.city && v.city !== v.region) {
-                            detailParts.push(`${cityThai} <span class="accuracy-badge accuracy-low">ประมาณพิกัดจากการเชื่อมต่อเสาสัญญาณหรือโหนดเครือข่าย</span>`);
+                            detailParts.push(`${cityThai} <span class="accuracy-badge">(อำเภอ/เขต)</span>`);
                         }
                         
                         locationHtml = `<div class="location-cell">
-                            <span class="location-main">${mainLoc} <span class="accuracy-badge accuracy-high">อ้างอิงการจดทะเบียน IP ระดับประเทศ</span></span>
+                            <span class="location-main">${mainLoc} <span class="accuracy-badge">(ประเทศ)</span></span>
                             ${detailParts.length ? '<span class="location-detail">' + detailParts.join(' › ') + '</span>' : ''}
                         </div>`;
                     }
