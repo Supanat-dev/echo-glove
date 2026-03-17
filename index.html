@@ -2394,19 +2394,21 @@
 
             async function logVisit() {
                 try {
-                    // Fetch IP geolocation data (HTTPS-compatible)
+                    // Fetch IP geolocation data (Reliable for mobile & PC)
                     let geo = {};
                     try {
-                        const res = await fetch('https://ipapi.co/json/');
+                        const res = await fetch('https://ipwho.is/');
                         if (res.ok) {
                             const data = await res.json();
-                            geo = {
-                                ip: data.ip,
-                                country: data.country_name,
-                                region: data.region,
-                                city: data.city,
-                                isp: data.org
-                            };
+                            if (data.success) {
+                                geo = {
+                                    ip: data.ip,
+                                    country: data.country,
+                                    region: data.region,
+                                    city: data.city,
+                                    isp: data.connection.isp
+                                };
+                            }
                         }
                     } catch (e) { /* Geo fetch failed, continue without it */ }
 
