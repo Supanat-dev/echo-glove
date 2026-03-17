@@ -596,13 +596,22 @@
                     let locationHtml = '—';
                     if (v.country) {
                         const flag = getCountryFlag(v.country);
-                        let mainLoc = `${flag} ${v.country}`;
+                        const countryName = v.country === 'Thailand' ? 'ไทย' : v.country;
+                        const regionThai = translateToThai(v.region);
+                        const cityThai = translateToThai(v.city);
+                        
+                        let mainLoc = `${flag} ${countryName}`;
                         let detailParts = [];
-                        if (v.region) detailParts.push(`${v.region} <span class="accuracy-badge accuracy-medium">~75%</span>`);
-                        if (v.city) detailParts.push(`${v.city} <span class="accuracy-badge accuracy-low">~55%</span>`);
+                        
+                        if (v.region) {
+                            detailParts.push(`${regionThai} <span class="accuracy-badge accuracy-medium">สถานีฐาน/จังหวัด</span>`);
+                        }
+                        if (v.city && v.city !== v.region) {
+                            detailParts.push(`${cityThai} <span class="accuracy-badge accuracy-low">เครือข่าย/เขต</span>`);
+                        }
                         
                         locationHtml = `<div class="location-cell">
-                            <span class="location-main">${mainLoc} <span class="accuracy-badge accuracy-high">~99%</span></span>
+                            <span class="location-main">${mainLoc} <span class="accuracy-badge accuracy-high">ทะเบียน IP ชัดเจน</span></span>
                             ${detailParts.length ? '<span class="location-detail">' + detailParts.join(' › ') + '</span>' : ''}
                         </div>`;
                     }
@@ -646,10 +655,97 @@
                 'Philippines': '🇵🇭', 'India': '🇮🇳', 'Australia': '🇦🇺',
                 'Canada': '🇨🇦', 'Brazil': '🇧🇷', 'Russia': '🇷🇺',
                 'Myanmar': '🇲🇲', 'Laos': '🇱🇦', 'Cambodia': '🇰🇭',
-                'Taiwan': '🇹🇼', 'Hong Kong': '🇭🇰', 'Netherlands': '🇳🇱',
+                'Taiwan': '🇹🇼', 'Hong Kong': '🇰🇷', 'Netherlands': '🇳🇱',
                 'Italy': '🇮🇹', 'Spain': '🇪🇸', 'Sweden': '🇸🇪',
             };
             return flags[country] || '🌐';
+        }
+
+        // Simple Thai Translation mapping for common locations
+        function translateToThai(text) {
+            if (!text) return '';
+            const mapping = {
+                'Bangkok': 'กรุงเทพมหานคร',
+                'Nonthaburi': 'นนทบุรี',
+                'Pathum Thani': 'ปทุมธานี',
+                'Samut Prakan': 'สมุทรปราการ',
+                'Phra Nakhon Si Ayutthaya': 'พระนครศรีอยุธยา',
+                'Chon Buri': 'ชลบุรี',
+                'Chiang Mai': 'เชียงใหม่',
+                'Phuket': 'ภูเก็ต',
+                'Khon Kaen': 'ขอนแก่น',
+                'Nakhon Ratchasima': 'นครราชสีมา',
+                'Songkhla': 'สงขลา',
+                'Surat Thani': 'สุราษฎร์ธานี',
+                'Rayong': 'ระยอง',
+                'Samut Sakhon': 'สมุทรสาคร',
+                'Nakhon Pathom': 'นครปฐม',
+                'Udon Thani': 'อุดรธานี',
+                'Phitsanulok': 'พิษณุโลก',
+                'Chiang Rai': 'เชียงราย',
+                'Nakhon Sawan': 'นครสวรรค์',
+                'Prachuap Khiri Khan': 'ประจวบคีรีขันธ์',
+                'Kanchanaburi': 'กาญจนบุรี',
+                'Ratchaburi': 'ราชบุรี',
+                'Saraphi': 'สารภี',
+                'Bang Phli': 'บางพลี',
+                'Bang Lamung': 'บางละมุง',
+                'Thanyaburi': 'ธัญบุรี',
+                'Khlong Luang': 'คลองหลวง',
+                'Pak Kret': 'ปากเกร็ด',
+                'Sukhothai': 'สุโขทัย',
+                'Lop Buri': 'ลพบุรี',
+                'Ang Thong': 'อ่างทอง',
+                'Sing Buri': 'สิงห์บุรี',
+                'Chai Nat': 'ชัยนาท',
+                'Uthai Thani': 'อุทัยธานี',
+                'Kamphaeng Phet': 'กำแพงเพชร',
+                'Phichit': 'พิจิตร',
+                'Phetchabun': 'เพชรบูรณ์',
+                'Mae Hong Son': 'แม่ฮ่องสอน',
+                'Lamphun': 'ลำพูน',
+                'Lampang': 'ลำปาง',
+                'Uttaradit': 'อุตรดิตถ์',
+                'Phrae': 'แพร่',
+                'Nan': 'น่าน',
+                'Phayao': 'พะเยา',
+                'Kalasin': 'กาฬสินธุ์',
+                'Chaiyaphum': 'ชัยภูมิ',
+                'Yasothon': 'ยโสธร',
+                'Mukdahan': 'มุกดาหาร',
+                'Roi Et': 'ร้อยเอ็ด',
+                'Loei': 'เลย',
+                'Sakon Nakhon': 'สกลนคร',
+                'Nakhon Phanom': 'นครพนม',
+                'Nong Khai': 'หนองคาย',
+                'Maha Sarakham': 'มหาสารคาม',
+                'Nong Bua Lam Phu': 'หนองบัวลำภู',
+                'Bueng Kan': 'บึงกาฬ',
+                'Buriram': 'บุรีรัมย์',
+                'Surin': 'สุรินทร์',
+                'Sisaket': 'ศรีสะเกษ',
+                'Ubon Ratchathani': 'อุบลราชธานี',
+                'Amnat Charoen': 'อำนาจเจริญ',
+                'Chachoengsao': 'ฉะเชิงเทรา',
+                'Nakhon Nayok': 'นครนายก',
+                'Sa Kaeo': 'สระแก้ว',
+                'Trat': 'ตราด',
+                'Chanthaburi': 'จันทบุรี',
+                'Prachin Buri': 'ปราจีนบุรี',
+                'Chaiyaphum': 'ชัยภูมิ',
+                'Phetchaburi': 'เพชรบุรี',
+                'Ranong': 'ระนอง',
+                'Chumphon': 'ชุมพร',
+                'Phang Nga': 'พังงา',
+                'Krabi': 'กระบี่',
+                'Trang': 'ตรัง',
+                'Phatthalung': 'พัทลุง',
+                'Satun': 'สตูล',
+                'Pattani': 'ปัตตานี',
+                'Yala': 'ยะลา',
+                'Narathiwat': 'นราธิวาส'
+            };
+            return mapping[text] || text;
         }
 
         // Delete all visitors
