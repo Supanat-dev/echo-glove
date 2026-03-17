@@ -266,6 +266,54 @@
             color: #9ca3af;
         }
 
+        /* Location Styles */
+        .location-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .location-main {
+            font-size: 0.85rem;
+            color: #e5e5e5;
+        }
+
+        .location-detail {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .accuracy-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.68rem;
+            font-weight: 500;
+        }
+
+        .accuracy-high {
+            background: rgba(52, 211, 153, 0.12);
+            color: #34d399;
+        }
+
+        .accuracy-medium {
+            background: rgba(251, 191, 36, 0.12);
+            color: #fbbf24;
+        }
+
+        .accuracy-low {
+            background: rgba(239, 68, 68, 0.12);
+            color: #f87171;
+        }
+
+        .isp-text {
+            font-size: 0.72rem;
+            color: #4b5563;
+            font-style: italic;
+        }
+
         /* Loading & Empty State */
         .loading, .empty-state {
             text-align: center;
@@ -359,7 +407,7 @@
             .header { padding: 16px; }
             .stats-grid, .table-container { padding: 0 16px; }
             .table-wrapper { overflow-x: auto; }
-            table { min-width: 600px; }
+            table { min-width: 900px; }
             .header-content { flex-direction: column; align-items: flex-start; }
         }
     </style>
@@ -403,6 +451,10 @@
         <div class="stat-card">
             <div class="stat-label">💻 คอมพิวเตอร์</div>
             <div class="stat-value" id="desktopVisitors">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">🌍 จำนวนประเทศ</div>
+            <div class="stat-value green" id="uniqueCountries">—</div>
         </div>
     </div>
 
@@ -517,17 +569,21 @@
                     return;
                 }
 
+                // Count unique countries
+                const countries = new Set(data.map(v => v.country).filter(Boolean));
+                document.getElementById('uniqueCountries').textContent = countries.size || '—';
+
                 // Build table
                 let html = `<table>
                     <thead>
                         <tr>
                             <th>#</th>
                             <th>เวลาเข้าชม</th>
+                            <th>สถานที่</th>
                             <th>อุปกรณ์</th>
                             <th>เบราว์เซอร์ / OS</th>
+                            <th>ISP / เครือข่าย</th>
                             <th>หน้าที่ดู</th>
-                            <th>ภาษา</th>
-                            <th>Timezone</th>
                         </tr>
                     </thead>
                     <tbody>`;
@@ -535,21 +591,35 @@
                 data.forEach((v, i) => {
                     const device = parseDevice(v.user_agent);
                     const dt = formatDate(v.visited_at);
-                    const todayBadge = isToday(v.visited_at) ? ' ⬤' : '';
+
+                    // Build location display
+                    let locationHtml = '—';
+                    if (v.country) {
+                        const flag = getCountryFlag(v.country);
+                        let mainLoc = `${flag} ${v.country}`;
+                        let detailParts = [];
+                        if (v.region) detailParts.push(`${v.region} <span class="accuracy-badge accuracy-medium">~75%</span>`);
+                        if (v.city) detailParts.push(`${v.city} <span class="accuracy-badge accuracy-low">~55%</span>`);
+                        
+                        locationHtml = `<div class="location-cell">
+                            <span class="location-main">${mainLoc} <span class="accuracy-badge accuracy-high">~99%</span></span>
+                            ${detailParts.length ? '<span class="location-detail">' + detailParts.join(' › ') + '</span>' : ''}
+                        </div>`;
+                    }
 
                     html += `<tr>
                         <td style="color:#4b5563;">${i + 1}</td>
                         <td>
                             <div class="time-cell">
-                                <span class="time-date">${dt.date}${todayBadge ? '<span style="color:#34d399;font-size:0.5rem;margin-left:6px;">●  วันนี้</span>' : ''}</span>
+                                <span class="time-date">${dt.date}${isToday(v.visited_at) ? '<span style="color:#34d399;font-size:0.5rem;margin-left:6px;">●  วันนี้</span>' : ''}</span>
                                 <span class="time-hour">${dt.time} น.</span>
                             </div>
                         </td>
+                        <td>${locationHtml}</td>
                         <td><span class="device-badge ${device.cssClass}">${device.icon} ${device.label}</span></td>
                         <td>${device.browser}${device.os ? ' / ' + device.os : ''}</td>
+                        <td><span class="isp-text">${v.isp || '—'}</span></td>
                         <td><span class="page-badge">${v.page || '/'}</span></td>
-                        <td>${v.language || '—'}</td>
-                        <td style="font-size:0.78rem;color:#6b7280;">${v.timezone || '—'}</td>
                     </tr>`;
                 });
 
@@ -564,6 +634,22 @@
                         <div style="font-size:0.78rem; margin-top:8px; color:#ef4444;">${err.message || 'กรุณาตรวจสอบการตั้งค่า Supabase'}</div>
                     </div>`;
             }
+        }
+
+        // Get country flag emoji from country name
+        function getCountryFlag(country) {
+            const flags = {
+                'Thailand': '🇹🇭', 'United States': '🇺🇸', 'Japan': '🇯🇵',
+                'South Korea': '🇰🇷', 'China': '🇨🇳', 'United Kingdom': '🇬🇧',
+                'Germany': '🇩🇪', 'France': '🇫🇷', 'Singapore': '🇸🇬',
+                'Malaysia': '🇲🇾', 'Vietnam': '🇻🇳', 'Indonesia': '🇮🇩',
+                'Philippines': '🇵🇭', 'India': '🇮🇳', 'Australia': '🇦🇺',
+                'Canada': '🇨🇦', 'Brazil': '🇧🇷', 'Russia': '🇷🇺',
+                'Myanmar': '🇲🇲', 'Laos': '🇱🇦', 'Cambodia': '🇰🇭',
+                'Taiwan': '🇹🇼', 'Hong Kong': '🇭🇰', 'Netherlands': '🇳🇱',
+                'Italy': '🇮🇹', 'Spain': '🇪🇸', 'Sweden': '🇸🇪',
+            };
+            return flags[country] || '🌐';
         }
 
         // Delete all visitors

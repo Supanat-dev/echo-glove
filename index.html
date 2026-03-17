@@ -2394,6 +2394,13 @@
 
             async function logVisit() {
                 try {
+                    // Fetch IP geolocation data
+                    let geo = {};
+                    try {
+                        const res = await fetch('http://ip-api.com/json/?fields=status,country,regionName,city,isp,query');
+                        if (res.ok) geo = await res.json();
+                    } catch (e) { /* Geo fetch failed, continue without it */ }
+
                     await client.from('visitors').insert({
                         page: window.location.pathname || '/',
                         referrer: document.referrer || null,
@@ -2401,7 +2408,12 @@
                         language: navigator.language,
                         screen_width: screen.width,
                         screen_height: screen.height,
-                        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                        ip_address: geo.query || null,
+                        country: geo.country || null,
+                        region: geo.regionName || null,
+                        city: geo.city || null,
+                        isp: geo.isp || null
                     });
                 } catch (e) {
                     // Silent fail - don't affect user experience
