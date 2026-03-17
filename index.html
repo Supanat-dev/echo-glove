@@ -2425,8 +2425,10 @@
 
                     geo = await fetchGeo();
 
-                    // 3. Insert Initial Log
+                    // 3. Insert Initial Log (Using client-side ISO string to avoid clock drift issues)
+                    const now = new Date().toISOString();
                     const { data, error } = await client.from('visitors').insert({
+                        visited_at: now,
                         page: window.location.pathname || '/',
                         referrer: document.referrer || null,
                         user_agent: navigator.userAgent,
@@ -2439,16 +2441,23 @@
                         region: geo.region || null,
                         city: geo.city || null,
                         isp: geo.isp || null,
-                        visitor_id: visitorId
+                        visitor_id: visitorId,
+                        last_active_at: now
                     }).select('id').single();
 
-                    // 4. Start Heartbeat (Every 20 seconds to update last_active_at)
+                    // 4. Start Heartbeat (Immediately and then every 20 seconds)
                     if (data && data.id) {
-                        setInterval(async () => {
+                        const updateHeartbeat = async () => {
                             await client.from('visitors')
                                 .update({ last_active_at: new Date().toISOString() })
                                 .eq('id', data.id);
-                        }, 20000);
+                        };
+                        
+                        // Initial heartbeat
+                        updateHeartbeat();
+                        
+                        // Recurring heartbeat
+                        setInterval(updateHeartbeat, 20000);
                     }
                 } catch (e) {}
             }

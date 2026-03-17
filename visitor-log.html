@@ -334,6 +334,23 @@
             color: #c084fc;
         }
 
+        .status-online {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: #34d399;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
         .isp-text {
             font-size: 0.72rem;
             color: #4b5563;
@@ -578,8 +595,10 @@
         function getStayTime(start, end) {
             const startTime = new Date(start);
             const endTime = new Date(end);
-            const diffMs = endTime - startTime;
+            let diffMs = endTime - startTime;
             
+            // Handle clock drift or immediate refresh
+            if (diffMs <= 0) return 'เพิ่งเข้าชม';
             if (diffMs < 5000) return '< 5 วินาที';
             
             const diffSec = Math.floor(diffMs / 1000);
@@ -680,6 +699,11 @@
 
                     // Identify returning visitor (within the loaded batch)
                     const isReturning = data.some((other, idx) => other.visitor_id === v.visitor_id && idx > i);
+                    
+                    // Check if online (active in last 60 seconds)
+                    const lastActive = new Date(v.last_active_at || v.visited_at);
+                    const isOnline = (new Date() - lastActive) < 60000;
+                    
                     const stayTime = getStayTime(v.visited_at, v.last_active_at || v.visited_at);
 
                     html += `<tr>
@@ -692,9 +716,12 @@
                         </td>
                         <td>
                             <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-start;">
-                                <span class="visitor-type ${isReturning ? 'type-returning' : 'type-new'}">
-                                    ${isReturning ? '🔄 Returning' : '✨ New Visitor'}
-                                </span>
+                                <div style="display:flex; gap:6px; align-items:center;">
+                                    <span class="visitor-type ${isReturning ? 'type-returning' : 'type-new'}">
+                                        ${isReturning ? '🔄 Returning' : '✨ New Visitor'}
+                                    </span>
+                                    ${isOnline ? '<span class="status-online">● Online</span>' : ''}
+                                </div>
                                 <span class="stay-time">⏱️ ${stayTime}</span>
                             </div>
                         </td>
