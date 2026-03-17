@@ -2394,11 +2394,20 @@
 
             async function logVisit() {
                 try {
-                    // Fetch IP geolocation data
+                    // Fetch IP geolocation data (HTTPS-compatible)
                     let geo = {};
                     try {
-                        const res = await fetch('http://ip-api.com/json/?fields=status,country,regionName,city,isp,query');
-                        if (res.ok) geo = await res.json();
+                        const res = await fetch('https://ipapi.co/json/');
+                        if (res.ok) {
+                            const data = await res.json();
+                            geo = {
+                                ip: data.ip,
+                                country: data.country_name,
+                                region: data.region,
+                                city: data.city,
+                                isp: data.org
+                            };
+                        }
                     } catch (e) { /* Geo fetch failed, continue without it */ }
 
                     await client.from('visitors').insert({
@@ -2409,9 +2418,9 @@
                         screen_width: screen.width,
                         screen_height: screen.height,
                         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                        ip_address: geo.query || null,
+                        ip_address: geo.ip || null,
                         country: geo.country || null,
-                        region: geo.regionName || null,
+                        region: geo.region || null,
                         city: geo.city || null,
                         isp: geo.isp || null
                     });
