@@ -472,20 +472,19 @@
                     <span>อัปเดตอัตโนมัติ</span>
                 </div>
                 <button class="btn btn-primary" onclick="loadVisitors()">🔄 รีเฟรช</button>
-                <button class="btn btn-danger" onclick="showDeleteModal()">🗑️ ล้างข้อมูล</button>
             </div>
         </div>
     </div>
 
     <!-- Stats -->
     <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-label">📈 ผู้เข้าชมทั้งหมด</div>
-            <div class="stat-value accent" id="totalVisitors">—</div>
+        <div class="stat-card" style="border: 1px solid rgba(52, 211, 153, 0.4); box-shadow: 0 0 15px rgba(52, 211, 153, 0.15);">
+            <div class="stat-label">🟢 ออนไลน์ตอนนี้</div>
+            <div class="stat-value green" id="onlineNow">—</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">📅 วันนี้</div>
-            <div class="stat-value green" id="todayVisitors">—</div>
+            <div class="stat-label" id="periodLabel">📅 ยอดเข้าชม (วันนี้)</div>
+            <div class="stat-value accent" id="periodVisitors">—</div>
         </div>
         <div class="stat-card">
             <div class="stat-label">📱 มือถือ</div>
@@ -513,7 +512,11 @@
 
         <div class="table-wrapper">
             <div class="table-header">
-                <span class="table-title">รายการผู้เข้าชมล่าสุด</span>
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <span class="table-title">ประวัติการเข้าชม</span>
+                    <input type="date" id="dateFilter" onchange="loadVisitors()" style="padding: 4px 8px; border-radius: 6px; background: rgba(0,0,0,0.5); color: #fff; border: 1px solid rgba(255,255,255,0.15); outline: none; font-family: inherit; font-size: 0.8rem; cursor: pointer; color-scheme: dark;">
+                    <button onclick="document.getElementById('dateFilter').value=''; loadVisitors()" style="background:none; border:none; color:#60a5fa; cursor:pointer; font-size:0.8rem; padding:0; text-decoration:underline;">แสดงทั้งหมด</button>
+                </div>
                 <span class="visitor-count" id="showingCount"></span>
             </div>
             <div id="tableContent">
@@ -525,49 +528,57 @@
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div class="modal-overlay" id="deleteModal">
-        <div class="modal-box">
-            <h3>⚠️ ยืนยันการล้างข้อมูล</h3>
-            <p>ข้อมูลผู้เข้าชมทั้งหมดจะถูกลบ<br>การกระทำนี้ไม่สามารถย้อนกลับได้</p>
-            <div class="modal-actions">
-                <button class="btn" onclick="hideDeleteModal()">ยกเลิก</button>
-                <button class="btn btn-danger" onclick="deleteAllVisitors()">ลบทั้งหมด</button>
-            </div>
-        </div>
-    </div>
+
 
     <script>
         const SUPABASE_URL = 'https://kwtvrjbvnibyrshvhmcf.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_P0PDsahfYiqaEIEWhqBfEA_hRUw2WYL';
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Parse User Agent to readable format
+        // Parse User Agent to readable format (Enhanced detection)
         function parseDevice(ua) {
-            if (!ua) return { type: 'unknown', icon: '❓', label: 'ไม่ทราบ', browser: '' };
+            if (!ua) return { type: 'unknown', icon: '❓', label: 'ไม่ทราบ', browser: '', os: '', cssClass: 'device-desktop' };
 
-            const isMobile = /Mobile|Android|iPhone|iPad|iPod/i.test(ua);
+            const isMobile = /Mobile|Android|iPhone|iPod/i.test(ua);
             const isTablet = /iPad|Tablet/i.test(ua);
+            const isIPadOS = ua.includes('iPad(iPadOS-detected)');
 
+            // Enhanced browser detection (order matters!)
             let browser = 'Unknown';
-            if (ua.includes('Edg/')) browser = 'Edge';
-            else if (ua.includes('Chrome/')) browser = 'Chrome';
+            if (ua.includes('SamsungBrowser/')) browser = 'Samsung Internet';
+            else if (ua.includes('Brave')) browser = 'Brave';
+            else if (ua.includes('Arc/')) browser = 'Arc';
+            else if (ua.includes('Vivaldi/')) browser = 'Vivaldi';
+            else if (ua.includes('OPR/') || ua.includes('Opera')) browser = 'Opera';
+            else if (ua.includes('Edg/')) browser = 'Edge';
             else if (ua.includes('Firefox/')) browser = 'Firefox';
-            else if (ua.includes('Safari/') && !ua.includes('Chrome')) browser = 'Safari';
-            else if (ua.includes('Opera') || ua.includes('OPR/')) browser = 'Opera';
+            else if (ua.includes('CriOS/')) browser = 'Chrome (iOS)';
+            else if (ua.includes('FxiOS/')) browser = 'Firefox (iOS)';
+            else if (ua.includes('Chrome/') && !ua.includes('Edg/')) browser = 'Chrome';
+            else if (ua.includes('Safari/') && !ua.includes('Chrome') && !ua.includes('Edg/')) browser = 'Safari';
 
+            // Enhanced OS detection
             let os = '';
-            if (ua.includes('Android')) os = 'Android';
-            else if (ua.includes('iPhone') || ua.includes('iPad') || ua.includes('iPod')) os = 'iOS';
-            else if (ua.includes('Mac OS') || ua.includes('Macintosh')) {
-                // Check if it's an iPad identifying as a Mac
-                if (isMobile || isTablet) os = 'iOS (iPad)';
-                else os = 'macOS';
+            if (isIPadOS) os = 'iPadOS';
+            else if (ua.includes('Android')) {
+                const verMatch = ua.match(/Android\s([\d.]+)/);
+                os = 'Android' + (verMatch ? ' ' + verMatch[1] : '');
             }
+            else if (ua.includes('iPhone')) {
+                const verMatch = ua.match(/iPhone OS ([\d_]+)/);
+                os = 'iOS' + (verMatch ? ' ' + verMatch[1].replace(/_/g, '.') : '');
+            }
+            else if (ua.includes('iPad')) os = 'iPadOS';
+            else if (ua.includes('iPod')) os = 'iOS (iPod)';
+            else if (ua.includes('CrOS')) os = 'Chrome OS';
+            else if (ua.includes('HarmonyOS')) os = 'HarmonyOS';
+            else if (ua.includes('Mac OS') || ua.includes('Macintosh')) os = 'macOS';
+            else if (ua.includes('Windows NT 10')) os = 'Windows 10/11';
             else if (ua.includes('Windows')) os = 'Windows';
             else if (ua.includes('Linux')) os = 'Linux';
 
-            if (isTablet) return { type: 'tablet', icon: '📱', label: 'Tablet', browser, os, cssClass: 'device-tablet' };
+            // Device type classification
+            if (isIPadOS || isTablet) return { type: 'tablet', icon: '📱', label: 'Tablet', browser, os, cssClass: 'device-tablet' };
             if (isMobile) return { type: 'mobile', icon: '📱', label: 'Mobile', browser, os, cssClass: 'device-mobile' };
             return { type: 'desktop', icon: '💻', label: 'Desktop', browser, os, cssClass: 'device-desktop' };
         }
@@ -616,44 +627,101 @@
             return `${diffHour} ชม. ${remainingMin} นาที`;
         }
 
-        // Load visitors
+        // Load visitors (Enhanced with accurate counting)
         async function loadVisitors() {
             try {
-                const { data, error } = await client
+                const dateInput = document.getElementById('dateFilter')?.value;
+                const dateObj = dateInput ? new Date(dateInput) : null;
+                
+                // 1. Get accurate online count globally (active within last 30 sec)
+                const onlineThreshold = 30000;
+                const nowMs = Date.now();
+                const activeTime = new Date(nowMs - onlineThreshold).toISOString();
+                
+                const { count: globalOnlineCount } = await client
                     .from('visitors')
-                    .select('*')
-                    .order('visited_at', { ascending: false })
-                    .limit(200);
+                    .select('*', { count: 'exact', head: true })
+                    .gte('last_active_at', activeTime);
 
+                // 2. Build Query for table data based on date filter
+                let query = client.from('visitors').select('*').order('visited_at', { ascending: false });
+                
+                if (dateObj) {
+                    const startOfDay = new Date(dateObj);
+                    startOfDay.setHours(0, 0, 0, 0);
+                    const endOfDay = new Date(dateObj);
+                    endOfDay.setHours(23, 59, 59, 999);
+                    query = query.gte('visited_at', startOfDay.toISOString()).lte('visited_at', endOfDay.toISOString());
+                } else {
+                    query = query.limit(500); // limit to avoid browser crash
+                }
+
+                const { data: tableData, error } = await query;
                 if (error) throw error;
 
-                // Update stats
-                const total = data.length;
-                const todayCount = data.filter(v => isToday(v.visited_at)).length;
-                const mobileCount = data.filter(v => parseDevice(v.user_agent).type === 'mobile').length;
-                const desktopCount = data.filter(v => parseDevice(v.user_agent).type === 'desktop').length;
+                // 3. Compute stats from the fetched data
+                const mobileCount = tableData.filter(v => {
+                    const d = parseDevice(v.user_agent);
+                    return d.type === 'mobile' || d.type === 'tablet';
+                }).length;
+                const desktopCount = tableData.filter(v => parseDevice(v.user_agent).type === 'desktop').length;
+                
+                // Build visitor return count map (using visitor_id frequency in DB batch)
+                const visitorIdCounts = {};
+                tableData.forEach(v => {
+                    if (v.visitor_id) {
+                        visitorIdCounts[v.visitor_id] = (visitorIdCounts[v.visitor_id] || 0) + 1;
+                    }
+                });
 
-                document.getElementById('totalVisitors').textContent = total;
-                document.getElementById('todayVisitors').textContent = todayCount;
-                document.getElementById('mobileVisitors').textContent = mobileCount;
-                document.getElementById('desktopVisitors').textContent = desktopCount;
-                document.getElementById('showingCount').textContent = `แสดง ${total} รายการล่าสุด`;
+                // 4. Update stat cards
+                if (document.getElementById('onlineNow')) document.getElementById('onlineNow').textContent = globalOnlineCount || 0;
+                
+                const periodLabel = document.getElementById('periodLabel');
+                const periodVisitors = document.getElementById('periodVisitors');
+                
+                if (periodLabel && periodVisitors) {
+                    if (dateObj) {
+                        const dName = formatDate(dateObj.toISOString()).date;
+                        periodLabel.textContent = `📅 ยอดเข้าชม (${isToday(dateObj.toISOString()) ? 'วันนี้' : dName})`;
+                        periodVisitors.textContent = tableData.length.toLocaleString();
+                    } else {
+                        periodLabel.textContent = `📅 ยอดเข้าชม (ทั้งหมดล่าสุด)`;
+                        periodVisitors.textContent = tableData.length.toLocaleString();
+                    }
+                }
+                
+                if (document.getElementById('mobileVisitors')) document.getElementById('mobileVisitors').textContent = mobileCount.toLocaleString();
+                if (document.getElementById('desktopVisitors')) document.getElementById('desktopVisitors').textContent = desktopCount.toLocaleString();
 
-                if (total === 0) {
+                if (dateObj && isToday(dateObj.toISOString())) {
+                    document.getElementById('showingCount').textContent = `แสดง ${tableData.length} รายการของวันนี้`;
+                } else if (dateObj) {
+                    document.getElementById('showingCount').textContent = `แสดง ${tableData.length} รายการของวันที่เลือก`;
+                } else {
+                    document.getElementById('showingCount').textContent = `แสดง ${tableData.length} รายการล่าสุด`;
+                }
+
+                if (tableData.length === 0) {
                     document.getElementById('tableContent').innerHTML = `
                         <div class="empty-state">
                             <div class="empty-icon">📭</div>
-                            <div>ยังไม่มีผู้เข้าชม</div>
-                            <div style="font-size:0.78rem; margin-top:8px;">เมื่อมีคนเข้าชมเว็บไซต์ ข้อมูลจะแสดงที่นี่</div>
+                            <div>ไม่มีผู้เข้าชมในวันที่เลือก</div>
                         </div>`;
+                    
+                    if(document.getElementById('uniqueCountries')) {
+                        document.getElementById('uniqueCountries').textContent = '—';
+                    }
                     return;
                 }
 
-                // Count unique countries
-                const countries = new Set(data.map(v => v.country).filter(Boolean));
-                document.getElementById('uniqueCountries').textContent = countries.size || '—';
+                // Count unique countries 
+                const countries = new Set(tableData.map(v => v.country).filter(Boolean));
+                if(document.getElementById('uniqueCountries')) {
+                    document.getElementById('uniqueCountries').textContent = countries.size || '—';
+                }
 
-                // Build table
+                // 5. Build table
                 let html = `<table>
                     <thead>
                         <tr>
@@ -664,12 +732,11 @@
                             <th>อุปกรณ์</th>
                             <th>เบราว์เซอร์ / OS</th>
                             <th>ISP / เครือข่าย</th>
-                            <th>หน้าที่ดู</th>
                         </tr>
                     </thead>
                     <tbody>`;
 
-                data.forEach((v, i) => {
+                tableData.forEach((v, i) => {
                     const device = parseDevice(v.user_agent);
                     const dt = formatDate(v.visited_at);
 
@@ -697,14 +764,23 @@
                         </div>`;
                     }
 
-                    // Identify returning visitor (within the loaded batch)
-                    const isReturning = data.some((other, idx) => other.visitor_id === v.visitor_id && idx > i);
+                    // Returning visitor: check if this visitor_id has appeared more than once
+                    const isReturning = v.visitor_id && (visitorIdCounts[v.visitor_id] || 0) > 1;
                     
-                    // Check if online (active in last 60 seconds)
+                    // Check if online (active within 30 seconds - 2x the heartbeat interval)
                     const lastActive = new Date(v.last_active_at || v.visited_at);
-                    const isOnline = (new Date() - lastActive) < 60000;
+                    const isOnline = (nowMs - lastActive.getTime()) < onlineThreshold;
                     
                     const stayTime = getStayTime(v.visited_at, v.last_active_at || v.visited_at);
+
+                    // Status text: Online / Offline with time since last active
+                    let statusHtml = '';
+                    if (isOnline) {
+                        statusHtml = '<span class="status-online">● Online</span>';
+                    } else if (v.last_active_at) {
+                        const offlineSince = getTimeSince(v.last_active_at);
+                        statusHtml = `<span style="font-size:0.65rem; color:#6b7280;">ออฟไลน์ ${offlineSince}</span>`;
+                    }
 
                     html += `<tr>
                         <td style="color:#4b5563;">${i + 1}</td>
@@ -718,9 +794,9 @@
                             <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-start;">
                                 <div style="display:flex; gap:6px; align-items:center;">
                                     <span class="visitor-type ${isReturning ? 'type-returning' : 'type-new'}">
-                                        ${isReturning ? '🔄 Returning' : '✨ New Visitor'}
+                                        ${isReturning ? '🔄 User เก่า' : '✨ User ใหม่'}
                                     </span>
-                                    ${isOnline ? '<span class="status-online">● Online</span>' : ''}
+                                    ${statusHtml}
                                 </div>
                                 <span class="stay-time">⏱️ ${stayTime}</span>
                             </div>
@@ -728,8 +804,7 @@
                         <td>${locationHtml}</td>
                         <td><span class="device-badge ${device.cssClass}">${device.icon} ${device.label}</span></td>
                         <td>${device.browser}${device.os ? ' / ' + device.os : ''}</td>
-                        <td><span class="isp-text">${v.isp || '—'}</span></td>
-                        <td><span class="page-badge">${v.page || '/'}</span></td>
+                        <td><span class="isp-text">${formatISP(v.isp, device.type === 'mobile' || device.type === 'tablet')}</span></td>
                     </tr>`;
                 });
 
@@ -744,6 +819,54 @@
                         <div style="font-size:0.78rem; margin-top:8px; color:#ef4444;">${err.message || 'กรุณาตรวจสอบการตั้งค่า Supabase'}</div>
                     </div>`;
             }
+        }
+
+        // Get human-readable time since a date
+        function getTimeSince(dateStr) {
+            const diffMs = Date.now() - new Date(dateStr).getTime();
+            if (diffMs < 0) return '';
+            const sec = Math.floor(diffMs / 1000);
+            if (sec < 60) return `${sec} วิ ที่แล้ว`;
+            const min = Math.floor(sec / 60);
+            if (min < 60) return `${min} นาที ที่แล้ว`;
+            const hr = Math.floor(min / 60);
+            if (hr < 24) return `${hr} ชม. ที่แล้ว`;
+            const day = Math.floor(hr / 24);
+            return `${day} วัน ที่แล้ว`;
+        }
+
+        // Format ISP to friendly brand names + connection type
+        function formatISP(rawISP, isMobileDevice) {
+            if (!rawISP) return 'ไม่ทราบ';
+            const lower = rawISP.toLowerCase();
+            
+            let brand = '';
+            let type = '';
+
+            if (lower.includes('advanced info service') || lower.includes('ais') || lower.includes('advance wireless network') || lower.includes('awn')) brand = 'AIS';
+            else if (lower.includes('true') || lower.includes('trueonline')) brand = 'TRUE';
+            else if (lower.includes('dtac') || lower.includes('telenor') || lower.includes('total access')) brand = 'DTAC';
+            else if (lower.includes('3bb') || lower.includes('triple t')) { brand = '3BB'; type = '(Wi-Fi)'; }
+            else if (lower.includes('tot ') || lower.includes('national telecom') || lower.includes('nt ')) { brand = 'NT'; type = '(Wi-Fi)'; }
+            else if (lower.includes('cat ') || lower.includes('cat-telecom')) { brand = 'NT'; type = '(Wi-Fi)'; }
+            else if (lower.includes('jasmine') || lower.includes('jastel')) { brand = 'JasTel'; type = '(Wi-Fi)'; }
+            else if (lower.includes('symphony') || lower.includes('symc')) { brand = 'SINET'; type = '(Wi-Fi)'; }
+            else if (lower.includes('uninet')) { brand = 'UniNet'; type = '(Wi-Fi)'; }
+            else if (lower.includes('cloudflare') || lower.includes('aws') || lower.includes('google') || lower.includes('azure') || lower.includes('digitalocean')) { brand = 'Cloud/Proxy'; type = ''; }
+            else if (lower.includes('vpn') || lower.includes('surfshark') || lower.includes('nord')) { brand = 'VPN'; type = ''; }
+            else { 
+                brand = rawISP.replace(/ (Public |)Company Limited/gi, '').replace(/ (Co\.|Corp\.|Inc\.|Ltd\.|LLC|Plc)/gi, '').replace(/\s+/g, ' ').trim(); 
+                if(brand.length > 20) brand = brand.substring(0, 18) + '…'; 
+            }
+
+            if (!type && brand !== 'Cloud/Proxy' && brand !== 'VPN') {
+                type = isMobileDevice ? '(เน็ตมือถือ)' : '(Wi-Fi)';
+            }
+            
+            if (brand === 'Cloud/Proxy' || brand === 'VPN') {
+                return brand;
+            }
+            return `${brand} <span style="font-size: 0.72rem; color: #9ca3af; white-space: nowrap;">${type}</span>`;
         }
 
         // Get country flag emoji from country name
@@ -901,29 +1024,38 @@
             return mapping[cleaned] || cleaned;
         }
 
-        // Delete all visitors
-        async function deleteAllVisitors() {
-            try {
-                await client.from('visitors').delete().neq('id', 0);
-                hideDeleteModal();
-                loadVisitors();
-            } catch (err) {
-                alert('เกิดข้อผิดพลาด: ' + err.message);
-            }
-        }
 
-        function showDeleteModal() {
-            document.getElementById('deleteModal').classList.add('active');
-        }
-        function hideDeleteModal() {
-            document.getElementById('deleteModal').classList.remove('active');
+
+        // Set default date filter to today's date local time
+        const d = new Date();
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        if (document.getElementById('dateFilter')) {
+            document.getElementById('dateFilter').value = `${yyyy}-${mm}-${dd}`;
         }
 
         // Initial load
         loadVisitors();
 
-        // Auto-refresh every 30 seconds
-        setInterval(loadVisitors, 30000);
+        // Auto-refresh every 15 seconds (matches heartbeat interval)
+        setInterval(loadVisitors, 15000);
+
+        // Supabase Realtime: auto-refresh on any INSERT or UPDATE
+        try {
+            client.channel('visitors-changes')
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'visitors' }, () => {
+                    loadVisitors();
+                })
+                .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'visitors' }, () => {
+                    // Debounce: don't reload too often on heartbeat floods
+                    clearTimeout(window._realtimeDebounce);
+                    window._realtimeDebounce = setTimeout(loadVisitors, 3000);
+                })
+                .subscribe();
+        } catch (e) {
+            console.warn('Realtime subscription failed, using polling only');
+        }
     </script>
 </body>
 </html>

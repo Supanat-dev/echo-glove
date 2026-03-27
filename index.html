@@ -2405,33 +2405,49 @@
                         localStorage.setItem('echo_glove_visitor_id', visitorId);
                     }
 
-                    // 2. Fetch IP Geolocation
+                    // 2. Detect device type (for iPad detection via maxTouchPoints)
+                    const isIPadOS = navigator.maxTouchPoints && navigator.maxTouchPoints > 2 
+                                     && /Macintosh/i.test(navigator.userAgent);
+                    const deviceUA = isIPadOS 
+                        ? navigator.userAgent + ' iPad(iPadOS-detected)' 
+                        : navigator.userAgent;
+
+                    // 3. Fetch IP Geolocation (3 fallback APIs)
                     let geo = {};
                     const fetchGeo = async () => {
+                        // Fallback 1: ipwho.is (unlimited, no key required)
                         try {
                             const res = await fetch('https://ipwho.is/');
                             if (!res.ok) throw new Error();
                             const data = await res.json();
-                            if (data.success) return { ip: data.ip, country: data.country, region: data.region, city: data.city, isp: data.connection?.isp };
+                            if (data.success) return { ip: data.ip, country: data.country, region: data.region, city: data.city, isp: data.connection?.isp || data.connection?.org };
                         } catch (e) {}
+                        // Fallback 2: ipapi.co (1000/day free)
                         try {
                             const res = await fetch('https://ipapi.co/json/');
                             if (!res.ok) throw new Error();
                             const data = await res.json();
-                            return { ip: data.ip, country: data.country_name, region: data.region, city: data.city, isp: data.org };
+                            if (!data.error) return { ip: data.ip, country: data.country_name, region: data.region, city: data.city, isp: data.org };
+                        } catch (e) {}
+                        // Fallback 3: ip-api.com (45/min free, HTTP only)
+                        try {
+                            const res = await fetch('http://ip-api.com/json/?fields=query,country,regionName,city,isp');
+                            if (!res.ok) throw new Error();
+                            const data = await res.json();
+                            if (data.status === 'success') return { ip: data.query, country: data.country, region: data.regionName, city: data.city, isp: data.isp };
                         } catch (e) {}
                         return {};
                     };
 
                     geo = await fetchGeo();
 
-                    // 3. Insert Initial Log (Using client-side ISO string to avoid clock drift issues)
+                    // 4. Insert Initial Log
                     const now = new Date().toISOString();
                     const { data, error } = await client.from('visitors').insert({
                         visited_at: now,
                         page: window.location.pathname || '/',
                         referrer: document.referrer || null,
-                        user_agent: navigator.userAgent,
+                        user_agent: deviceUA,
                         language: navigator.language,
                         screen_width: screen.width,
                         screen_height: screen.height,
@@ -2445,23 +2461,90 @@
                         last_active_at: now
                     }).select('id').single();
 
-                    // 4. Start Heartbeat (Immediately and then every 20 seconds)
+                    // 5. Smart Heartbeat System
                     if (data && data.id) {
+                        const rowId = data.id;
+                        let heartbeatInterval = null;
+
+                        // Heartbeat function
                         const updateHeartbeat = async () => {
-                            await client.from('visitors')
-                                .update({ last_active_at: new Date().toISOString() })
-                                .eq('id', data.id);
+                            try {
+                                await client.from('visitors')
+                                    .update({ last_active_at: new Date().toISOString() })
+                                    .eq('id', rowId);
+                            } catch (e) {}
                         };
-                        
-                        // Initial heartbeat
-                        updateHeartbeat();
-                        
-                        // Recurring heartbeat
-                        setInterval(updateHeartbeat, 20000);
+
+                        // Start recurring heartbeat (every 15 seconds for better accuracy)
+                        const startHeartbeat = () => {
+                            if (!heartbeatInterval) {
+                                heartbeatInterval = setInterval(updateHeartbeat, 15000);
+                            }
+                        };
+
+                        // Stop heartbeat when tab is hidden
+                        const stopHeartbeat = () => {
+                            if (heartbeatInterval) {
+                                clearInterval(heartbeatInterval);
+                                heartbeatInterval = null;
+                            }
+                        };
+
+                        // Start the first heartbeat cycle
+                        startHeartbeat();
+
+                        // Visibility change: pause/resume heartbeat + send update when hiding
+                        document.addEventListener('visibilitychange', () => {
+                            if (document.visibilityState === 'hidden') {
+                                stopHeartbeat();
+                                // Send final heartbeat via sendBeacon for reliability
+                                sendFinalHeartbeat(rowId);
+                            } else {
+                                // Tab became visible again - send heartbeat and resume
+                                updateHeartbeat();
+                                startHeartbeat();
+                            }
+                        });
+
+                        // Before page unload: send final heartbeat via sendBeacon
+                        window.addEventListener('beforeunload', () => {
+                            sendFinalHeartbeat(rowId);
+                        });
+
+                        // Also handle pagehide for mobile Safari
+                        window.addEventListener('pagehide', () => {
+                            sendFinalHeartbeat(rowId);
+                        });
                     }
                 } catch (e) {}
             }
 
+            // Send a final heartbeat using sendBeacon (works even when page is closing)
+            function sendFinalHeartbeat(rowId) {
+                try {
+                    const url = SUPABASE_URL + '/rest/v1/visitors?id=eq.' + rowId;
+                    const payload = JSON.stringify({ last_active_at: new Date().toISOString() });
+                    const headers = {
+                        type: 'application/json'
+                    };
+                    // Try sendBeacon first (most reliable on page close)
+                    if (navigator.sendBeacon) {
+                        const blob = new Blob([payload], { type: 'application/json' });
+                        // sendBeacon doesn't support custom headers well, so use fetch with keepalive
+                        fetch(url, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'apikey': SUPABASE_KEY,
+                                'Authorization': 'Bearer ' + SUPABASE_KEY,
+                                'Prefer': 'return=minimal'
+                            },
+                            body: payload,
+                            keepalive: true
+                        }).catch(() => {});
+                    }
+                } catch (e) {}
+            }
             logVisit();
         })();
     </script>
