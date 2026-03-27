@@ -447,11 +447,86 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .header { padding: 16px; }
-            .stats-grid, .table-container { padding: 0 16px; }
-            .table-wrapper { overflow-x: auto; }
-            table { min-width: 900px; }
-            .header-content { flex-direction: column; align-items: flex-start; }
+            .header { padding: 12px 16px; }
+            .header-content { flex-direction: row; align-items: center; flex-wrap: nowrap; }
+            .header-left { gap: 10px; }
+            .logo { font-size: 1.2rem; }
+            .badge { font-size: 0.7rem; padding: 3px 8px; }
+            .btn { padding: 6px 12px; font-size: 0.8rem; gap: 4px; }
+            .refresh-indicator span { display: none; } /* hide text, keep dot */
+
+            .stats-grid {
+                padding: 0 12px;
+                margin: 14px auto;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .stat-card { padding: 14px 16px; border-radius: 12px; }
+            .stat-value { font-size: 1.6rem; }
+            .stat-label { font-size: 0.72rem; }
+
+            .table-container { padding: 0 12px; margin-bottom: 80px; }
+            .table-wrapper { border-radius: 12px; }
+            .table-header {
+                padding: 12px 14px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .table-header > div { width: 100%; }
+            .table-header > div input[type="date"] { flex: 1; }
+
+            /* Hide desktop table on mobile */
+            .desktop-table { display: none; }
+
+            /* Visitor Card layout for mobile */
+            .visitor-cards { display: flex; flex-direction: column; gap: 1px; }
+            .visitor-card {
+                background: rgba(18, 18, 18, 0.9);
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+                padding: 14px 16px;
+                transition: background 0.2s;
+            }
+            .visitor-card:active { background: rgba(59, 130, 246, 0.06); }
+            .visitor-card:last-child { border-bottom: none; }
+
+            .vc-top {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 10px;
+            }
+            .vc-time-block { display: block; }
+            .vc-time { font-size: 0.9rem; font-weight: 500; color: #e5e5e5; }
+            .vc-date { font-size: 0.72rem; color: #6b7280; margin-top: 1px; }
+            .vc-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+
+            .vc-row {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                flex-wrap: wrap;
+                margin-bottom: 6px;
+            }
+            .vc-row:last-child { margin-bottom: 0; }
+
+            .vc-label {
+                font-size: 0.68rem;
+                color: #4b5563;
+                min-width: 42px;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+            }
+            .vc-val { font-size: 0.82rem; color: #d1d5db; }
+            .vc-num { font-size: 0.72rem; color: #4b5563; font-family: 'Rajdhani', monospace; }
+
+            .location-note { margin: 0 12px 14px; font-size: 0.75rem; padding: 10px 12px; }
+        }
+
+        /* Show visitor cards only on mobile, hide on desktop */
+        .visitor-cards { display: none; }
+        @media (min-width: 769px) {
+            .desktop-table { display: table; width: 100%; border-collapse: collapse; }
         }
     </style>
 </head>
@@ -721,95 +796,138 @@
                     document.getElementById('uniqueCountries').textContent = countries.size || '—';
                 }
 
-                // 5. Build table
-                let html = `<table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>เวลาเข้าชม</th>
-                            <th>สถานะ / Stay Time</th>
-                            <th>สถานที่</th>
-                            <th>อุปกรณ์</th>
-                            <th>เบราว์เซอร์ / OS</th>
-                            <th>ISP / เครือข่าย</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
+                // 5. Build content (cards on mobile, table on desktop)
+                const isMobileView = window.innerWidth <= 768;
 
-                tableData.forEach((v, i) => {
-                    const device = parseDevice(v.user_agent);
-                    const dt = formatDate(v.visited_at);
+                if (isMobileView) {
+                    // Mobile: render cards
+                    let cardsHtml = '<div class="visitor-cards">';
+                    tableData.forEach((v, i) => {
+                        const device = parseDevice(v.user_agent);
+                        const dt = formatDate(v.visited_at);
+                        const isReturning = v.visitor_id && (visitorIdCounts[v.visitor_id] || 0) > 1;
+                        const lastActive = new Date(v.last_active_at || v.visited_at);
+                        const isOnline = (nowMs - lastActive.getTime()) < onlineThreshold;
+                        const stayTime = getStayTime(v.visited_at, v.last_active_at || v.visited_at);
 
-                    // Build location display
-                    let locationHtml = '—';
-                    if (v.country) {
-                        const flag = getCountryFlag(v.country);
-                        const countryName = translateCountry(v.country);
-                        const regionThai = translateToThai(v.region);
-                        const cityThai = translateToThai(v.city);
-                        
-                        let mainLoc = `${flag} ${countryName}`;
-                        let detailParts = [];
-                        
-                        if (v.region) {
-                            detailParts.push(`${regionThai} <span class="accuracy-badge">(จังหวัด)</span>`);
+                        let locShort = '—';
+                        if (v.country) {
+                            const flag = getCountryFlag(v.country);
+                            const regionThai = translateToThai(v.region);
+                            locShort = `${flag} ${translateCountry(v.country)}${v.region ? ` · ${regionThai}` : ''}`;
                         }
-                        if (v.city && v.city !== v.region) {
-                            detailParts.push(`${cityThai} <span class="accuracy-badge">(อำเภอ/เขต)</span>`);
-                        }
-                        
-                        locationHtml = `<div class="location-cell">
-                            <span class="location-main">${mainLoc} <span class="accuracy-badge">(ประเทศ)</span></span>
-                            ${detailParts.length ? '<span class="location-detail">' + detailParts.join(' › ') + '</span>' : ''}
-                        </div>`;
-                    }
 
-                    // Returning visitor: check if this visitor_id has appeared more than once
-                    const isReturning = v.visitor_id && (visitorIdCounts[v.visitor_id] || 0) > 1;
-                    
-                    // Check if online (active within 30 seconds - 2x the heartbeat interval)
-                    const lastActive = new Date(v.last_active_at || v.visited_at);
-                    const isOnline = (nowMs - lastActive.getTime()) < onlineThreshold;
-                    
-                    const stayTime = getStayTime(v.visited_at, v.last_active_at || v.visited_at);
+                        const onlineBadge = isOnline
+                            ? `<span class="status-online">● Online</span>`
+                            : (v.last_active_at ? `<span style="font-size:0.65rem;color:#6b7280;">ออฟไลน์ ${getTimeSince(v.last_active_at)}</span>` : '');
 
-                    // Status text: Online / Offline with time since last active
-                    let statusHtml = '';
-                    if (isOnline) {
-                        statusHtml = '<span class="status-online">● Online</span>';
-                    } else if (v.last_active_at) {
-                        const offlineSince = getTimeSince(v.last_active_at);
-                        statusHtml = `<span style="font-size:0.65rem; color:#6b7280;">ออฟไลน์ ${offlineSince}</span>`;
-                    }
-
-                    html += `<tr>
-                        <td style="color:#4b5563;">${i + 1}</td>
-                        <td>
-                            <div class="time-cell">
-                                <span class="time-date">${dt.date}${isToday(v.visited_at) ? '<span style="color:#34d399;font-size:0.5rem;margin-left:6px;">●  วันนี้</span>' : ''}</span>
-                                <span class="time-hour">${dt.time} น.</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-start;">
-                                <div style="display:flex; gap:6px; align-items:center;">
-                                    <span class="visitor-type ${isReturning ? 'type-returning' : 'type-new'}">
-                                        ${isReturning ? '🔄 User เก่า' : '✨ User ใหม่'}
-                                    </span>
-                                    ${statusHtml}
+                        cardsHtml += `
+                        <div class="visitor-card">
+                            <div class="vc-top">
+                                <div class="vc-time-block">
+                                    <div class="vc-time">${dt.time} น. ${isToday(v.visited_at) ? '<span style="color:#34d399;font-size:0.6rem;">● วันนี้</span>' : ''}</div>
+                                    <div class="vc-date">${dt.date}</div>
                                 </div>
-                                <span class="stay-time">⏱️ ${stayTime}</span>
+                                <div class="vc-badges">
+                                    <span class="visitor-type ${isReturning ? 'type-returning' : 'type-new'}">${isReturning ? '🔄 User เก่า' : '✨ User ใหม่'}</span>
+                                    ${onlineBadge}
+                                </div>
                             </div>
-                        </td>
-                        <td>${locationHtml}</td>
-                        <td><span class="device-badge ${device.cssClass}">${device.icon} ${device.label}</span></td>
-                        <td>${device.browser}${device.os ? ' / ' + device.os : ''}</td>
-                        <td><span class="isp-text">${formatISP(v.isp, device.type === 'mobile' || device.type === 'tablet')}</span></td>
-                    </tr>`;
-                });
+                            <div class="vc-row">
+                                <span class="vc-label">📍 ที่อยู่</span>
+                                <span class="vc-val">${locShort}</span>
+                            </div>
+                            <div class="vc-row">
+                                <span class="vc-label">📱 อุปกรณ์</span>
+                                <span class="device-badge ${device.cssClass}" style="font-size:0.72rem;padding:2px 8px;">${device.icon} ${device.label}</span>
+                                <span class="vc-val" style="color:#6b7280;">${device.browser}${device.os ? ' · ' + device.os : ''}</span>
+                            </div>
+                            <div class="vc-row">
+                                <span class="vc-label">🌐 เน็ต</span>
+                                <span class="vc-val">${formatISP(v.isp, device.type === 'mobile' || device.type === 'tablet')}</span>
+                                <span class="vc-val" style="color:#34d399;">⏱ ${stayTime}</span>
+                            </div>
+                        </div>`;
+                    });
+                    cardsHtml += '</div>';
+                    document.getElementById('tableContent').innerHTML = cardsHtml;
 
-                html += '</tbody></table>';
-                document.getElementById('tableContent').innerHTML = html;
+                } else {
+                    // Desktop: render table
+                    let html = `<table class="desktop-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>เวลาเข้าชม</th>
+                                <th>สถานะ / Stay Time</th>
+                                <th>สถานที่</th>
+                                <th>อุปกรณ์</th>
+                                <th>เบราว์เซอร์ / OS</th>
+                                <th>ISP / เครือข่าย</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
+                    tableData.forEach((v, i) => {
+                        const device = parseDevice(v.user_agent);
+                        const dt = formatDate(v.visited_at);
+
+                        let locationHtml = '—';
+                        if (v.country) {
+                            const flag = getCountryFlag(v.country);
+                            const countryName = translateCountry(v.country);
+                            const regionThai = translateToThai(v.region);
+                            const cityThai = translateToThai(v.city);
+                            let mainLoc = `${flag} ${countryName}`;
+                            let detailParts = [];
+                            if (v.region) detailParts.push(`${regionThai} <span class="accuracy-badge">(จังหวัด)</span>`);
+                            if (v.city && v.city !== v.region) detailParts.push(`${cityThai} <span class="accuracy-badge">(อำเภอ/เขต)</span>`);
+                            locationHtml = `<div class="location-cell">
+                                <span class="location-main">${mainLoc} <span class="accuracy-badge">(ประเทศ)</span></span>
+                                ${detailParts.length ? '<span class="location-detail">' + detailParts.join(' › ') + '</span>' : ''}
+                            </div>`;
+                        }
+
+                        const isReturning = v.visitor_id && (visitorIdCounts[v.visitor_id] || 0) > 1;
+                        const lastActive = new Date(v.last_active_at || v.visited_at);
+                        const isOnline = (nowMs - lastActive.getTime()) < onlineThreshold;
+                        const stayTime = getStayTime(v.visited_at, v.last_active_at || v.visited_at);
+
+                        let statusHtml = '';
+                        if (isOnline) {
+                            statusHtml = '<span class="status-online">● Online</span>';
+                        } else if (v.last_active_at) {
+                            const offlineSince = getTimeSince(v.last_active_at);
+                            statusHtml = `<span style="font-size:0.65rem; color:#6b7280;">ออฟไลน์ ${offlineSince}</span>`;
+                        }
+
+                        html += `<tr>
+                            <td style="color:#4b5563;">${i + 1}</td>
+                            <td>
+                                <div class="time-cell">
+                                    <span class="time-date">${dt.date}${isToday(v.visited_at) ? '<span style="color:#34d399;font-size:0.5rem;margin-left:6px;">● วันนี้</span>' : ''}</span>
+                                    <span class="time-hour">${dt.time} น.</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-start;">
+                                    <div style="display:flex; gap:6px; align-items:center;">
+                                        <span class="visitor-type ${isReturning ? 'type-returning' : 'type-new'}">${isReturning ? '🔄 User เก่า' : '✨ User ใหม่'}</span>
+                                        ${statusHtml}
+                                    </div>
+                                    <span class="stay-time">⏱️ ${stayTime}</span>
+                                </div>
+                            </td>
+                            <td>${locationHtml}</td>
+                            <td><span class="device-badge ${device.cssClass}">${device.icon} ${device.label}</span></td>
+                            <td>${device.browser}${device.os ? ' / ' + device.os : ''}</td>
+                            <td><span class="isp-text">${formatISP(v.isp, device.type === 'mobile' || device.type === 'tablet')}</span></td>
+                        </tr>`;
+                    });
+
+                    html += '</tbody></table>';
+                    document.getElementById('tableContent').innerHTML = html;
+                }
 
             } catch (err) {
                 document.getElementById('tableContent').innerHTML = `
