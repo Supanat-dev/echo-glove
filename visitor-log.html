@@ -524,8 +524,8 @@
         }
 
         /* Show visitor cards only on mobile, hide on desktop */
-        .visitor-cards { display: none; }
         @media (min-width: 769px) {
+            .visitor-cards { display: none !important; }
             .desktop-table { display: table; width: 100%; border-collapse: collapse; }
         }
     </style>
