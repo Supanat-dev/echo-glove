@@ -785,7 +785,7 @@
             </div>
 
             <!-- Evolution Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative items-start">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 relative items-start">
 
                 <!-- Prototype 1 -->
                 <div class="relative group stagger-item">
@@ -926,28 +926,21 @@
                     </div>
                 </div>
 
-                <!-- Prototype 4 (LATEST) -->
+                <!-- Prototype 4 -->
                 <div class="relative group stagger-item">
-                    <!-- LATEST Badge -->
-                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 z-20">
-                        <div
-                            class="px-3 py-1 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full text-white text-xs font-bold tracking-wider shadow-lg shadow-blue-500/50">
-                            LATEST
-                        </div>
-                    </div>
                     <div
-                        class="glass-panel p-2 rounded-2xl border-2 border-blue-500/30 hover:border-blue-500/60 transition-all duration-500 card-3d border-glow shadow-lg shadow-blue-500/10">
+                        class="glass-panel p-2 rounded-2xl border border-white/10 hover:border-echo-accent/50 transition-colors duration-500 card-3d border-glow">
                         <div class="relative h-64 overflow-hidden rounded-xl mb-4 bg-gradient-to-br from-gray-900 to-black flex items-center justify-center p-4 cursor-pointer"
                             onclick="openPrototype4Gallery()">
                             <!-- รูป Prototype 4 -->
                             <img src="PROTOTYPE_4_1.jpg" alt="Prototype 4 - Compact Design"
                                 class="max-w-full max-h-full object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
                             <div
-                                class="absolute top-4 left-4 w-10 h-10 bg-gradient-to-br from-blue-600 to-cyan-600 text-white flex items-center justify-center rounded-full font-tech font-bold border border-blue-400/50 shadow-lg">
+                                class="absolute top-4 left-4 w-10 h-10 bg-gray-800 text-white flex items-center justify-center rounded-full font-tech font-bold border border-white/20">
                                 04</div>
                             <!-- Gallery indicator badge -->
                             <div
-                                class="absolute top-4 right-4 flex items-center gap-1 px-2 py-1 bg-blue-500/20 backdrop-blur-sm rounded-full border border-blue-400/30 text-white text-xs">
+                                class="absolute top-4 right-4 flex items-center gap-1 px-2 py-1 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 text-white text-xs">
                                 <i data-lucide="images" class="w-3 h-3"></i>
                                 <span>2</span>
                             </div>
@@ -967,6 +960,59 @@
                                 class="text-sm text-gray-500 mt-2 font-light group-hover:text-white transition-all duration-300">
                                 ออกแบบการเก็บแผงวงจรใหม่ ทำให้ขนาดถุงมือสั้นลงและกระทัดรัดมากขึ้น
                                 พร้อมการจัดระเบียบสายไฟที่ดีขึ้น</p>
+                        </div>
+                    </div>
+                    <!-- Arrow for Desktop -->
+                    <div class="hidden md:block absolute -right-6 top-1/2 -translate-y-1/2 z-10 text-gray-600">
+                        <i data-lucide="chevron-right" class="w-8 h-8 opacity-50"></i>
+                    </div>
+                    <!-- Arrow for Mobile -->
+                    <div class="md:hidden flex justify-center py-4 text-gray-600">
+                        <i data-lucide="chevron-down" class="w-8 h-8 opacity-50"></i>
+                    </div>
+                </div>
+
+                <!-- Prototype 5 (LATEST) -->
+                <div class="relative group stagger-item">
+                    <!-- LATEST Badge -->
+                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 z-20">
+                        <div
+                            class="px-3 py-1 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full text-white text-xs font-bold tracking-wider shadow-lg shadow-blue-500/50">
+                            LATEST
+                        </div>
+                    </div>
+                    <div
+                        class="glass-panel p-2 rounded-2xl border-2 border-blue-500/30 hover:border-blue-500/60 transition-all duration-500 card-3d border-glow shadow-lg shadow-blue-500/10">
+                        <div class="relative h-64 overflow-hidden rounded-xl mb-4 bg-gradient-to-br from-gray-900 to-black flex items-center justify-center p-4 cursor-pointer"
+                            onclick="openPrototype5Gallery()">
+                            <!-- รูป Prototype 5 -->
+                            <img src="PROTOTYPE_5_1.jpg" alt="Prototype 5"
+                                class="max-w-full max-h-full object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
+                            <div
+                                class="absolute top-4 left-4 w-10 h-10 bg-gradient-to-br from-blue-600 to-cyan-600 text-white flex items-center justify-center rounded-full font-tech font-bold border border-blue-400/50 shadow-lg">
+                                05</div>
+                            <!-- Gallery indicator badge -->
+                            <div
+                                class="absolute top-4 right-4 flex items-center gap-1 px-2 py-1 bg-blue-500/20 backdrop-blur-sm rounded-full border border-blue-400/30 text-white text-xs">
+                                <i data-lucide="images" class="w-3 h-3"></i>
+                                <span>4</span>
+                            </div>
+                            <!-- Hover overlay -->
+                            <div
+                                class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+                                <div
+                                    class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white flex flex-col items-center">
+                                    <i data-lucide="expand" class="w-8 h-8 mb-2"></i>
+                                    <span class="text-sm font-light">คลิกเพื่อดูรูปเพิ่มเติม</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="px-4 pb-4">
+                            <h3 class="text-2xl font-bold text-white font-tech">PROTOTYPE 5</h3>
+                            <p
+                                class="text-sm text-gray-500 mt-2 font-light group-hover:text-white transition-all duration-300">
+                                เราได้ทำการเปลี่ยนแบตเตอรี่เป็นแบบแบนและเปลี่ยนโมดูลพาวเวอร์แบงค์ใหม่ที่มีขนาดเล็กลง
+                                ทำให้ขนาดถุงมือเล็กลงและกะทัดรัดยิ่งขึ้น</p>
                         </div>
                     </div>
                 </div>
@@ -1087,18 +1133,33 @@
                     <h4 class="text-white font-bold text-lg mb-2">Speaker</h4>
                     <p class="text-gray-500 text-sm card-text">ลำโพงขนาดเล็กสำหรับเปล่งเสียง</p>
                 </div>
-                <!-- Item 5: Power Bank Module -->
+                <!-- Item 5: Power Bank Module (Original) -->
                 <div
                     class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-yellow-500 flex flex-col items-center text-center">
                     <div
                         class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
-                        <img src="aa11a675dc7af55a2c2b575404103114.jpg" alt="Power Bank Module"
+                        <img src="aa11a675dc7af55a2c2b575404103114.jpg" alt="Power Bank Module (Original)"
                             class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
                     </div>
                     <h4 class="text-white font-bold text-lg mb-2">Power Bank Module</h4>
-                    <p class="text-gray-500 text-sm card-text">วงจรควบคุมการชาร์จและจ่ายไฟ</p>
+                    <p class="text-gray-500 text-sm card-text">วงจรควบคุมการชาร์จและจ่ายไฟ (แบบเก่า)</p>
                 </div>
-                <!-- Item 6: Li-ion Battery -->
+                <!-- Item 6: Power Bank Module (Mini) -->
+                <div
+                    class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-amber-400 flex flex-col items-center text-center relative">
+                    <div
+                        class="absolute -top-3 left-1/2 transform -translate-x-1/2 z-20 px-3 py-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] tracking-widest font-bold rounded-full shadow-lg shadow-orange-500/50">
+                        NEW</div>
+                    <div
+                        class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
+                        <img src="40dff7eff8f607eb53b9d5486eb11f0d.jpg" alt="Power Bank Module (Mini)"
+                            class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <h4 class="text-white font-bold text-lg mb-2">Power Bank Module</h4>
+                    <p class="text-gray-500 text-sm card-text">โมดูลพาวเวอร์แบงค์ใหม่ที่มีขนาดเล็กลง
+                        ช่วยทำให้ขนาดถุงมือเล็กลงและกะทัดรัดยิ่งขึ้น</p>
+                </div>
+                <!-- Item 6: Li-ion Battery (Original) -->
                 <div
                     class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-green-500 flex flex-col items-center text-center">
                     <div
@@ -1107,7 +1168,21 @@
                             class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
                     </div>
                     <h4 class="text-white font-bold text-lg mb-2">Li-ion Battery</h4>
-                    <p class="text-gray-500 text-sm card-text">แบตเตอรี่ความจุ 2000 mAh 1 ก้อน</p>
+                    <p class="text-gray-500 text-sm card-text">แบตเตอรี่ความจุ 2000 mAh (แบบเก่า)</p>
+                </div>
+                <!-- Item 7: Li-Po Battery (Slim) -->
+                <div
+                    class="glass-panel p-6 hover:bg-white/5 transition-all duration-300 group rounded-xl border-l-4 border-l-emerald-400 flex flex-col items-center text-center relative">
+                    <div
+                        class="absolute -top-3 left-1/2 transform -translate-x-1/2 z-20 px-3 py-1 bg-gradient-to-r from-emerald-500 to-green-500 text-white text-[10px] tracking-widest font-bold rounded-full shadow-lg shadow-emerald-500/50">
+                        NEW</div>
+                    <div
+                        class="w-full h-40 mb-4 overflow-hidden rounded-lg bg-white/5 p-2 flex items-center justify-center">
+                        <img src="34326.jpg" alt="Li-Po Battery (Slim)"
+                            class="max-w-full max-h-full object-contain hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <h4 class="text-white font-bold text-lg mb-2">Li-Po Battery</h4>
+                    <p class="text-gray-500 text-sm card-text">แบตเตอรี่แบบใหม่ที่มีขนาดบางลง ความจุ 2000 mAh</p>
                 </div>
                 <!-- Item 7: SD Card -->
                 <div
@@ -1890,8 +1965,8 @@
                 <div class="text-right">
                     <p class="text-gray-400 text-sm font-light">จัดทำโดย</p>
                     <p class="text-xl text-white font-bold mt-1">สมาชิคกลุ่ม ECHO GLOVE</p>
-                    <p class="text-gray-500 text-xs mt-1 uppercase tracking-widest">นักเรียนชั้นมัธยมศึกษาปีที่ 5/4 GSRT
-                        & AI</p>
+                    <p class="text-gray-500 text-xs mt-1 uppercase tracking-widest">นักเรียนชั้นมัธยมศึกษาปีที่ 5/4
+                        ปีการศึกษา 2568</p>
                 </div>
             </div>
             <div class="mt-16 pt-8 border-t border-white/5 text-center text-gray-600 text-xs">
@@ -2332,6 +2407,17 @@
             title: 'PROTOTYPE 4 Gallery'
         };
 
+        // Prototype 5 Gallery Data
+        const prototype5Gallery = {
+            images: [
+                { src: 'PROTOTYPE_5_1.jpg', caption: 'กล่อง 3D Print ขนาดกะทัดรัด พร้อมแบตเตอรี่แบบแบนซ่อนภายใน' },
+                { src: 'PROTOTYPE_5_2.jpg', caption: 'มุมมองด้านในของกล่อง การจัดวางบอร์ดและลำโพง' },
+                { src: 'PROTOTYPE_5_3.jpg', caption: 'มุมมองด้านในเมื่อประกอบเข้าด้วยกัน' },
+                { src: 'PROTOTYPE_5_4.jpg', caption: 'มุมมองด้านบน - ถุงมือรูปลักษณ์กะทัดรัด' }
+            ],
+            title: 'PROTOTYPE 5 Gallery'
+        };
+
         function openPrototype1Gallery() {
             openGallery(prototype1Gallery.images, 0, prototype1Gallery.title);
         }
@@ -2346,6 +2432,10 @@
 
         function openPrototype4Gallery() {
             openGallery(prototype4Gallery.images, 0, prototype4Gallery.title);
+        }
+
+        function openPrototype5Gallery() {
+            openGallery(prototype5Gallery.images, 0, prototype5Gallery.title);
         }
 
         function openGallery(images, startIndex = 0, title = 'Gallery') {
@@ -2547,7 +2637,7 @@
     <!-- Supabase Visitor Tracking -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        (function() {
+        (function () {
             const SUPABASE_URL = 'https://kwtvrjbvnibyrshvhmcf.supabase.co';
             const SUPABASE_KEY = 'sb_publishable_P0PDsahfYiqaEIEWhqBfEA_hRUw2WYL';
             const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -2557,19 +2647,19 @@
                     // 1. Manage Persistent Visitor ID
                     let visitorId = localStorage.getItem('echo_glove_visitor_id');
                     if (!visitorId) {
-                        visitorId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : 
-                                    'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-                                        const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-                                        return v.toString(16);
-                                    });
+                        visitorId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() :
+                            'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                                const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                                return v.toString(16);
+                            });
                         localStorage.setItem('echo_glove_visitor_id', visitorId);
                     }
 
                     // 2. Detect device type (for iPad detection via maxTouchPoints)
-                    const isIPadOS = navigator.maxTouchPoints && navigator.maxTouchPoints > 2 
-                                     && /Macintosh/i.test(navigator.userAgent);
-                    const deviceUA = isIPadOS 
-                        ? navigator.userAgent + ' iPad(iPadOS-detected)' 
+                    const isIPadOS = navigator.maxTouchPoints && navigator.maxTouchPoints > 2
+                        && /Macintosh/i.test(navigator.userAgent);
+                    const deviceUA = isIPadOS
+                        ? navigator.userAgent + ' iPad(iPadOS-detected)'
                         : navigator.userAgent;
 
                     // 3. Fetch IP Geolocation (3 fallback APIs)
@@ -2581,21 +2671,21 @@
                             if (!res.ok) throw new Error();
                             const data = await res.json();
                             if (data.success) return { ip: data.ip, country: data.country, region: data.region, city: data.city, isp: data.connection?.isp || data.connection?.org };
-                        } catch (e) {}
+                        } catch (e) { }
                         // Fallback 2: ipapi.co (1000/day free)
                         try {
                             const res = await fetch('https://ipapi.co/json/');
                             if (!res.ok) throw new Error();
                             const data = await res.json();
                             if (!data.error) return { ip: data.ip, country: data.country_name, region: data.region, city: data.city, isp: data.org };
-                        } catch (e) {}
+                        } catch (e) { }
                         // Fallback 3: ip-api.com (45/min free, HTTP only)
                         try {
                             const res = await fetch('http://ip-api.com/json/?fields=query,country,regionName,city,isp');
                             if (!res.ok) throw new Error();
                             const data = await res.json();
                             if (data.status === 'success') return { ip: data.query, country: data.country, region: data.regionName, city: data.city, isp: data.isp };
-                        } catch (e) {}
+                        } catch (e) { }
                         return {};
                     };
 
@@ -2632,7 +2722,7 @@
                                 await client.from('visitors')
                                     .update({ last_active_at: new Date().toISOString() })
                                     .eq('id', rowId);
-                            } catch (e) {}
+                            } catch (e) { }
                         };
 
                         // Start recurring heartbeat (every 15 seconds for better accuracy)
@@ -2676,7 +2766,7 @@
                             sendFinalHeartbeat(rowId);
                         });
                     }
-                } catch (e) {}
+                } catch (e) { }
             }
 
             // Send a final heartbeat using sendBeacon (works even when page is closing)
@@ -2701,9 +2791,9 @@
                             },
                             body: payload,
                             keepalive: true
-                        }).catch(() => {});
+                        }).catch(() => { });
                     }
-                } catch (e) {}
+                } catch (e) { }
             }
             logVisit();
         })();
